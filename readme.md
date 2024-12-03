@@ -1,5 +1,3 @@
-**README.md for Johnathan D. Svoboda-James' Data Science Portfolio**
-
 ---
 
 # Johnathan D. Svoboda-James | Data Science Portfolio
