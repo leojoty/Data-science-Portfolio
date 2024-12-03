@@ -1,3 +1,4 @@
+
 ---
 
 # Johnathan D. Svoboda-James | Data Science Portfolio
@@ -201,4 +202,5 @@ This portfolio is a living document, constantly evolving with new projects, upda
 By navigating through this repository, you explore the intersection of data science, engineering, and theoretical physics, where innovation meets implementation. Thank you for visiting my portfolio. Let’s build the future together.
 
 ---
+
 
