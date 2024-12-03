@@ -1,0 +1,742 @@
+---
+title: "Module 3 Code"
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+#Section 1 
+
+```
+
+```{r}
+#Chaining with Magitrr
+
+library(simmer)
+
+library(magrittr)
+
+# We run functions inside of each other
+sqrt(sum(16,9))
+# With Chaining
+sum(16, 9) %>%
+  sqrt()
+
+# Another example
+set.seed(123)
+# We run functions inside of each other
+mean( rnorm( sample(100:200, size = 10000, replace = T) , 0, 1) )
+
+# With Chaining
+set.seed(123)
+sample(100:200, size = 10000, replace = T) %>%
+rnorm(0, 1) %>%
+mean()
+
+# The shortcut for chaining is CTRL + SHIFT + M 
+```
+
+
+
+```{r}
+# install.packages("simmer")
+library(simmer)
+set.seed(123)
+# Instantiate a new simulation environment
+env <- simmer("Clinic")
+env
+## simmer environment: Clinic | now: 0 | next:
+## { Monitor: in memory }
+# Set up a simple trajectory for a patient
+patient <- trajectory("patients' path") %>%
+
+ ##patient seizes one nurse
+
+   seize("nurse", 1) %>%
+ timeout(function() rnorm(1, 15, 1)) %>%
+ release("nurse", 1) %>%
+
+ seize("doctor", 1) %>%
+ timeout(function() rnorm(1, 20, 1)) %>%
+ release("doctor", 1) %>%
+
+ seize("administration", 1) %>%
+ timeout(function() rnorm(1, 5, 1)) %>%
+ release("administration", 1)
+#install.packages('simmer.plot')
+library(simmer.plot)
+#plot(patient)
+plot(patient, verbose = T)
+```
+```{r}
+env %>%
+ add_resource("nurse", 4) %>%
+ add_resource("doctor", 4) %>%
+ add_resource("administration", 1) %>%
+ add_generator("patient", patient, function() rnorm(1, 5, 0.5))
+```
+```{r}
+env %>%
+ run(540) 
+```
+```{r}
+# look under the hood
+# head(get_mon_arrivals(env))
+# head(get_mon_arrivals(env, per_resource = T))
+# head(get_mon_resources(env))
+```
+
+```{r}
+#Section 2
+```
+
+
+
+```{r}
+library(simmer)
+set.seed(123)
+# Set up a trajectory for a patient
+patient <- trajectory("patients' path") %>%
+
+ seize("nurse", 1) %>%
+ timeout(function() rnorm(1, 15, 1)) %>%
+ release("nurse", 1) %>%
+
+ seize("doctor", 1) %>%
+ timeout(function() rnorm(1, 20, 1)) %>%
+ release("doctor", 1) %>%
+
+ seize("administration", 1) %>%
+ timeout(function() rnorm(1, 5, 1)) %>%
+ release("administration", 1)
+# It is easy to replicate a simulation multiple times using standard lapply R functions, which is similar to a for-loop.
+envs <- lapply(1:30, function(i) {
+ simmer("Clinic") %>%
+ add_resource("nurse", 3) %>%
+ add_resource("doctor", 4) %>%
+ add_resource("administration", 1) %>%
+ add_generator("patient", patient, function() rnorm(1, 5, 0.5)) %>%
+ run(540)
+})
+# We can look at the result of one replication, e.g. the 5th and 6th replications:
+envs[[5]]
+```
+
+```{r}
+envs[[6]]
+```
+
+```{r}
+library(simmer.plot)
+resources <- get_mon_resources(envs)
+head(resources)
+```
+
+
+```{r}
+plot(resources, metric = "utilization")
+```
+
+```{r}
+plot(resources, metric = "usage")
+```
+
+```{r}
+# item = queue: plot represents the cumulative average number of people in the queue for each resource
+# item = server: plot represents the cumulative average number of busy resources
+# item = system: plot represents the sum of the cumulative average number of busy resources and the cumulative average number of people in the queue for each resource
+```
+
+
+```{r}
+Resource_6th_rep <- get_mon_resources(envs[[6]])
+plot(Resource_6th_rep, metric = "usage", "doctor", items = "server", steps = TRUE)
+```
+```{r}
+arrivals <- get_mon_arrivals(envs)
+```
+
+
+```{r}
+plot(arrivals, metric = "activity_time")
+```
+
+```{r}
+plot(arrivals, metric = "waiting_time")
+```
+
+```{r}
+plot(arrivals, metric = "flow_time")
+```
+```{r}
+# Activity_time: is the time an entity spends with resources.
+# Waiting_time: is the time an entity spends in queues.
+# Flow_time: is the total time that the entity spends in the system (EndTime- StartTime). 
+```
+
+```{r}
+#install.packages('gridExtra')
+library(gridExtra)
+p1 = plot(resources, metric = "utilization")
+p2 = plot(resources, metric = "usage")
+p3 = plot(arrivals, metric = "activity_time")
+p4 = plot(arrivals, metric = "waiting_time")
+grid.arrange(p1,p2,p3,p4)
+```
+
+
+```{r}
+#Section 3
+```
+
+```{r}
+library(simmer)
+# Set up a trajectory for a patient
+###### The Main Trajectory ##################################
+patient <- trajectory("patients' path") %>%
+
+ branch(function() sample(1:2, size=1, prob=c(0.50,0.50),replace=TRUE), continue=c(T,T),
+
+ ###### sub trajectory A ##################################
+ trajectory("A") %>%
+ set_prioritization(values = c(5,7,T)) %>%
+
+ seize("nurse", 1) %>%
+ timeout(function() rnorm(1, 15, 1)) %>%
+ release("nurse", 1) %>%
+  
+seize("doctor", 1) %>%
+ timeout(function() rnorm(1, 20, 1)) %>%
+ release("doctor", 1) %>%
+
+ seize("administration", 1) %>%
+ timeout(function() rnorm(1, 5, 1)) %>%
+ release("administration", 1) %>%
+
+ set_attribute("Priority", 1),
+
+ ###### sub trajectory B ###################################
+ trajectory("B") %>% # a sub trajectory
+ set_prioritization(values = c(3,7,T)) %>%
+
+ seize("nurse", 1) %>%
+ timeout(function() rnorm(1, 15, 1)) %>%
+ release("nurse", 1) %>%
+
+ seize("doctor", 1) %>%
+ timeout(function() rnorm(1, 20, 1)) %>%
+ release("doctor", 1) %>%
+
+ seize("administration", 1) %>%
+ timeout(function() rnorm(1, 5, 1)) %>%
+ release("administration", 1) %>%
+
+ set_attribute("Priority", 2)
+ )
+#library(simmer.plot)
+#plot(patient, verbose = T)
+set.seed(123)
+envs <- lapply(1:30, function(i) {
+ env <- simmer("Clinic") %>%
+ add_resource("nurse", 2) %>%
+ add_resource("doctor", 3) %>%
+ add_resource("administration", 2) %>%
+ add_generator("patient", patient, function() rnorm(1, 5, 0.5), mon = 2) %>%
+ run(540)
+})
+patientAttr <- get_mon_attributes(envs)
+# head(patientAttr)
+# Count of discharged patients for both types in 30 replications
+table(patientAttr$value)
+
+##
+## 1 2
+## 1460 534
+# Average of discharged patients per replication
+colMeans(table(patientAttr$replication, patientAttr$value))
+## 1 2
+## 48.66667 17.80000
+x1 <- get_mon_arrivals(envs)
+x2 <- get_mon_attributes(envs)
+all <- merge(x1, x2, by=c("name", "replication"), all = T)
+head(all)
+## name replication start_time end_time activity_time finished time
+## 1 patient0 1 4.719762 45.24844 40.52868 TRUE 45.24844
+## 2 patient0 10 5.015139 45.97090 40.95576 TRUE 45.97090
+## 3 patient0 11 5.658330 46.99411 41.33578 TRUE 46.99411
+## 4 patient0 12 5.677462 47.64740 41.96994 TRUE 47.64740
+## 5 patient0 13 3.962572 44.77832 40.81575 TRUE 44.77832
+## 6 patient0 14 5.562715 43.39526 37.83255 TRUE 43.39526
+## key value
+## 1 Priority 2
+## 2 Priority 1
+## 3 Priority 2
+## 4 Priority 1
+## 5 Priority 2
+## 6 Priority 1
+priori1 <- na.omit(subset(all, all$value == 1))
+priori2 <- na.omit(subset(all, all$value == 2))
+priori1.waiting = (priori1$end_time-priori1$start_time) - priori1$activity_time
+priori2.waiting = (priori2$end_time-priori2$start_time) - priori2$activity_time
+# Overal average waiting time for each type
+mean(priori1.waiting)
+## [1] 8.729509
+mean(priori2.waiting)
+## [1] 137.4483
+# Average waiting time per replication for each type
+priori1.waiting.rep <- aggregate(priori1.waiting, by = list(priori1$replication), mean)
+priori2.waiting.rep <- aggregate(priori2.waiting, by = list(priori2$replication), mean)
+
+boxplot(priori1.waiting.rep$x, priori2.waiting.rep$x, names = c("High Priorit
+y", "Low Priority"), main = "Waiting Time per Replication")
+
+# Practice: Find the standard error and 95% confidence interval for the average waiting time for each types of patient.
+
+```
+
+```{r}
+#Section 4
+```
+
+```{r}
+# Consider a manufacturing system comprising two different machines and one operator.
+
+# • The operator is assigned to run both machines
+# Parts arrive with an exponentially distributed interarrival time with a mean of 4 minutes. The arriving parts are one of two types.
+# Fifty percent of the arriving parts are Type 1 and are processed on Machine 1. These parts require the assigned operator for a 2-minute setup operation.
+# The remaining 50% of the parts are Type 2 and are processed on Machine 2. These parts require the assigned operator for a 3-minute setup operation.
+# The service times (excluding the setup time) are normally distributed with a mean of 2.5 minutes and a standard deviation of 0.5 minutes for Type 1 parts, a mean of 4.5 minutes, and a standard deviation of 0.5 minutes for Type 2 parts
+
+#Run your model for 800 minutes, with 50 replications. Report the average total time spent in the system (flow time) for each type of part.
+
+```
+
+```{r}
+library(simmer)
+## Warning: package 'simmer' was built under R version 3.5.3
+part <- trajectory("parts' path") %>%
+
+ branch(option = function() sample(1:2, 1, prob = c(0.5, 0.5), replace=T), continue = c(T,T),
+
+ trajectory("A") %>%
+ set_attribute("type", 1) %>%
+ seize("machine1", 1) %>%
+ seize("operator", 1) %>%
+ timeout(2) %>%
+ release("operator", 1)%>%
+ timeout(function() rnorm(1, 2.5, 0.5))%>%
+ release("machine1", 1),
+
+ trajectory("B") %>%
+ set_attribute("type", 2) %>%
+ seize("machine2", 1) %>%
+ seize("operator", 1) %>%
+ timeout(3) %>%
+ release("operator", 1)%>%
+timeout(function() rnorm(1, 4.5, 0.5))%>%
+ release("machine2", 1)
+ )
+envs <- lapply(1:50, function(i) {
+ simmer("Man") %>%
+ add_resource("operator", 1) %>%
+ add_resource("machine1", 1) %>%
+ add_resource("machine2", 1) %>%
+ add_generator("part", part, function() rexp(1, 1/4), mon = 2) %>%
+ run(800)
+})
+#res = get_mon_resources(envs)
+#plot(res, metric = "utilization")
+# Finding the average flow time for each type of part:
+x1 <- get_mon_arrivals(envs)
+x2 <- get_mon_attributes(envs)
+all <- merge(x1, x2, by=c("name", "replication"), all = T)
+head(all)
+
+TypeA <- subset(all, all$value == 1)
+TypeB <- subset(all, all$value == 2)
+typeA.flowTime = (TypeA$end_time-TypeA$start_time)
+typeB.flowTime = (TypeB$end_time-TypeB$start_time)
+# Average
+mean(typeA.flowTime, na.rm = T)
+## [1] 10.80073
+mean(typeB.flowTime, na.rm = T)
+```
+
+```{r}
+#Section 5
+```
+
+```{r}
+#A system with two types of customers
+
+#Suppose we have two different types of customers. Customers type 1 get service from counter 1, then leave. Customers type 2 get service from counter 2 and 3, sequentially. Here are the key parameters of the system.
+#• 80% of customers are type 1 and 20% type 2
+#• The arrival rate is Poisson with 𝜆𝜆 = 12 per hour. Therefore, the time between arrival is exponential with a mean of 5 minutes (why!).
+#• Serice Time on counter 1 is Normal(mean = 15, sd = 2)
+#• Serice Time on counter 2 is Normal(mean = 30, sd = 3)
+# Serice Time on counter 3 is Normal(mean = 5, sd = 0.5)
+#• We have two staff for counter 1 and they can serve two customers at the same time.
+#• We have one staff for counter 2 and one staff for counter 3. Run this model for 6 hours in 30 replications. (please watch the associated video and add notes to this document about the details of implementation and decision conclusion). 
+```
+
+```{r}
+library(simmer)
+library(simmer.plot)
+## Loading required package: ggplot2
+##
+## Attaching package: 'simmer.plot'
+## The following objects are masked from 'package:simmer':
+##
+## get_mon_arrivals, get_mon_attributes, get_mon_resources
+set.seed(123)
+customer <- trajectory() %>%
+branch(option = function() sample(1:2, 1, prob = c(.8,.2), replace = T), continue = c(T, T),
+
+ trajectory("Service A") %>%
+ seize("counter1", 1) %>%
+ timeout(function() rnorm(1, 15, 2)) %>%
+ release("counter1", 1),
+ 
+ trajectory("Service B") %>%
+ seize("counter2", 1) %>%
+ timeout(function() rnorm(1, 30, 3)) %>%
+ release("counter2", 1) %>%
+ seize("counter3", 1) %>%
+ timeout(function() rnorm(1, 5, 0.5)) %>%
+ release("counter3", 1)
+)
+#plot(customer, verbose = T)
+set.seed(123)
+envs <- lapply(1:30, function(i) {
+simmer("DMV") %>%
+ add_resource("counter1", 3) %>%
+ add_resource("counter2", 1) %>%
+ add_resource("counter3", 1) %>%
+ add_generator("Customer", customer, function() rexp(1, 1/5)) %>%
+ run(360)
+})
+resource <- get_mon_resources(envs)
+mean(resource$queue)
+## [1] 1.466355
+plot(resource, metric = "utilization")
+```
+```{r}
+plot(resource, metric = "usage")
+```
+```{r}
+arrivals <- get_mon_arrivals(envs, per_resource = T)
+waitingTime = (arrivals$end_time - arrivals$start_time) - arrivals$activity_time
+arrivals2 = cbind(arrivals, waitingTime)
+aggregate(arrivals2$waitingTime, by = list(arrivals2$resource), FUN=mean)
+```
+```{r}
+#Section 6
+```
+
+```{r}
+# Queue_size and Balking customers
+# Balking occurs when a customer refuses to join a queue if it is too long. Another term for a system with balking customers is one where "blocked customers" are "cleared," termed by engineers a BCC system.
+#For example, we investigate a BCC system with a single server, but the waiting space is limited. We will estimate the rate of balking when the maximum number in the queue is set to 3. On arrival into the system, the customer must first check to see if there is room. If there is not enough room, the customer balks.
+```
+
+```{r}
+library(simmer)
+## Warning: package 'simmer' was built under R version 4.0.5
+numsim = 30
+envs <- lapply(1:numsim, function(i) {
+
+ env <- simmer("Bank")
+
+ customer <- trajectory("Customer's path") %>%
+ seize("counter", continue = FALSE, reject = trajectory("Balking")) %>%
+ timeout(function() {rexp(1, 1/15)}) %>%
+ release("counter")
+ env %>%
+ add_resource("counter", 1, queue_size = 3) %>%
+ add_generator("customer", customer, function() rexp(1, 1/12), mon = 2)
+ env %>%
+ run(360)
+})
+arrivals = get_mon_arrivals(envs)
+# number of bulked customer per replication
+balked_arrivals <- subset(arrivals, arrivals$activity_time==0)
+bulked_per_replication <- aggregate(balked_arrivals$activity_time,
+list(balked_arrivals$replication), length)
+summary(bulked_per_replication$x)
+
+hist(bulked_per_replication$x)
+```
+
+```{r}
+#Reneging
+
+#The 'renege_in' method in R Simmer offers the possibility of setting a timeout, after which the arrival will abandon the trajectory. After reneging, the arrival can follow an optional sub-trajectory out. 
+# The 'renege_abort' method cancels the latter. Together, they allow us,for instance, to model arrivals with limited patience.
+
+#The clinic has four doctors on staff and one nurse to serve patients during the period of interest. On a typical day during the period of interest, there are about 15 arrivals per hour (therefore, the time between arrivals is exponential with the mean of 60/15 minutes), with 25% being a high priority, 60% being a medium priority, and the remaining being low priority. Upon arrival to the clinic, the patients are triaged by a nurse into one of the three types of patients. The triage process takes only 2–3 minutes uniformly distributed. Then, the patients wait in the waiting room and get called to visit doctors on an FCFS basis. They have found through a survey that an arriving patient will exit before being triaged if more than 20 people are waiting for service. Finally, they have found that the non-urgent (low priority) patients may depart if they have to wait longer than15±5 minutes after triage.
+
+#That is, a non-urgent patient may enter the clinic and begin waiting for a doctor, but if they have to wait more than 15±5 minutes (uniformly distributed), they will decide to renege and leave the clinic without getting service.
+
+#Priority Service Time Distribution (in Minutes)
+#High Normal(38, 8)
+#Medium Triangular(16, 22, 28)
+#Low Normal(12, 2)
+
+
+#Assuming that the clinic opens at 8 a.m. and closes at 6 p.m., simulate the process for 30 replications. The clinic would like to estimate the following:
+
+#(a) The average flow time of each type of patient,
+#(b) The probability that low priority patients balk,
+#(c) The probability that low priority patients renege.
+```
+
+```{r}
+library(triangle)
+## Warning: package 'triangle' was built under R version 4.0.5
+library(simmer)
+set.seed(12)
+envs <- lapply(1:30, function(i) {
+ env <- simmer("Clinic") %>%
+ add_resource("nurse", 1) %>%
+ add_resource("doctor", 4)
+
+ patient <- trajectory("patients' path") %>%
+
+ branch(function() sample(1:3, size=1, replace=TRUE, prob=c(0.25,0.60,
+0.15)), continue=c(T,T,T),
+
+ trajectory("High Priority") %>%
+ set_attribute("priority", 3) %>%
+ set_prioritization(c(3, 7, T)) %>%
+
+ # Balking policy, leave if queue in nurse and doctor > 20
+ leave(prob = function() ifelse((get_queue_count(env, "nurse")+
+get_queue_count(env, "doctor"))>20, 1, 0)) %>%
+ seize("nurse", 1) %>%
+ timeout(function() runif(1, 2, 3)) %>%
+ release("nurse", 1) %>%
+  
+  seize("doctor", 1) %>%
+ timeout(function() rnorm(1, 38, 8)) %>%
+ release("doctor", 1),
+
+ trajectory("Mid Priority") %>%
+ set_attribute("priority", 2) %>%
+ set_prioritization(c(2, 7, T)) %>%
+
+ # Balking policy, leave if queue in nurse and doctor > 20
+ leave(prob = function() ifelse((get_queue_count(env, "nurse")+
+get_queue_count(env, "doctor"))>20, 1, 0)) %>%
+ seize("nurse", 1) %>%
+ timeout(function() runif(1, 2, 3)) %>%
+ release("nurse", 1) %>%
+
+ seize("doctor", 1) %>%
+ timeout(function() rtriangle(1, 16, 28, 22)) %>%
+ release("doctor", 1),
+
+ trajectory("Low Priority") %>% # a sub trajectory
+ set_attribute("priority", 1) %>%
+ set_prioritization(c(1, 7, T)) %>%
+
+ # Balking policy, leave if queue in nurse and doctor > 20
+ leave(prob = function() ifelse((get_queue_count(env, "nurse")+
+get_queue_count(env, "doctor"))>20, 1, 0)) %>%
+ seize("nurse", 1) %>%
+ timeout(function() runif(1, 2, 3)) %>%
+ release("nurse", 1) %>%
+
+ renege_in(function() runif(1, 10, 20), out = trajectory()) %>%
+ seize("doctor", 1) %>%
+ renege_abort() %>%
+ timeout(function() rnorm(1, 12, 2)) %>%
+ release("doctor", 1)
+ )
+ env %>%
+ add_generator("patient", patient, function() rexp(1, 15/60), mon = 2)
+
+ env %>%
+ run(600)
+})
+# (a) the average flow time of each type of patient,
+x1 <- get_mon_arrivals(envs)
+x2 <- get_mon_attributes(envs)
+all <- merge(x1, x2, by=c("name", "replication"), all = T)
+
+all <- na.omit(all)
+Type1 <- subset(all, all$value == 1)
+Type2 <- subset(all, all$value == 2)
+Type3 <- subset(all, all$value == 3)
+type1.flowTime = (Type1$end_time-Type1$start_time)
+type2.flowTime = (Type2$end_time-Type2$start_time)
+type3.flowTime = (Type3$end_time-Type3$start_time)
+mean(type1.flowTime, na.rm = T)
+## [1] 16.56276
+mean(type2.flowTime, na.rm = T)
+## [1] 106.2038
+mean(type3.flowTime, na.rm = T)
+## [1] 39.83599
+# (b) probability of bulk for low priority
+mean(all$activity_time==0 & all$value==1)
+## [1] 0.0292631
+# (c) probability of low priority to renege
+mean(x1$activity_time>0 & (all$value)==1 & (all$finished)== FALSE)
+## [1] 0.1287576
+```
+```{r}
+#Section 7
+```
+
+```{r}
+library(simmer)
+set.seed(123)
+customer <-
+ trajectory("Customer's path") %>%
+
+ seize("counter", 1) %>%
+ timeout(function() runif(1, 10, 15)) %>%
+ release("counter", 1)
+library(simmer.plot)
+# Very simple structure:
+#plot(customer, verbose = T)
+
+set.seed(123)
+envs <- lapply(1:200, function(i) {
+simmer("Bank") %>%
+ add_resource("counter", 3) %>%
+ add_generator("customer", customer, function() rexp(1, 1/4)) %>%
+ run(360)
+})
+resources <- get_mon_resources(envs)
+plot(resources, metric = "utilization")
+```
+
+```{r}
+plot(resources, metric = "usage")
+```
+
+```{r}
+library(simmer.plot)
+arrivals <- get_mon_arrivals(envs)
+plot(arrivals, metric = "waiting_time")
+```
+
+```{r}
+# Average waiting time
+waitingTime = (arrivals$end_time - arrivals$start_time) - arrivals$activity_time
+mean(waitingTime)
+## [1] 19.93408
+# Find 95% Confidence Interval
+arrivals2 = cbind(arrivals, waitingTime)
+xbar = aggregate(arrivals2$waitingTime, by = list(arrivals2$replication), FUN
+=mean)
+quantile(xbar$x, c(0.025 , 0.975))
+```
+
+```{r}
+library(simmer)
+set.seed(123)
+customer <-
+ trajectory("Customer's path") %>%
+ select(c("counter1", "counter2", "counter3"), policy = "shortest-queue") %>% # try policy = "random" and see the difference on the outputs.
+ seize_selected() %>%
+ timeout(function() runif(1, 10, 15)) %>%
+ release_selected()
+#library(simmer.plot)
+# Very simple structure:
+#plot(customer, verbose = T)
+set.seed(123)
+envs2 <- lapply(1:200, function(i) {
+simmer("Bank") %>%
+ add_resource("counter1", 1) %>%
+ add_resource("counter2", 1) %>%
+ add_resource("counter3", 1) %>%
+ add_generator("customer", customer, function() rexp(1, 1/4)) %>%
+ run(360)
+})
+resources <- get_mon_resources(envs2)
+plot(resources, metric = "utilization")
+```
+
+```{r}
+plot(resources, metric = "usage")
+```
+
+```{r}
+library(simmer.plot)
+arrivals <- get_mon_arrivals(envs2)
+plot(arrivals, metric = "waiting_time")
+```
+
+```{r}
+# Average waiting time
+waitingTime = (arrivals$end_time - arrivals$start_time) - arrivals$activity_time
+mean(waitingTime) # Interpreted in the video.
+## [1] 18.6902
+# Find 95% Confidence Interval
+arrivals2 = cbind(arrivals, waitingTime)
+xbar2 = aggregate(arrivals2$waitingTime, by = list(arrivals2$replication), FUN=mean)
+quantile(xbar2$x, c(0.025 , 0.975))
+```
+
+```{r}
+boxplot(xbar$x, xbar2$x, names = c("single.queue", "multiple.queue"), ylab =
+"average waiting time")
+```
+
+```{r}
+library(simmer)
+customer <-
+ trajectory("Customer's path") %>%
+
+ branch(option = function() sample(1:2, 1, replace=T), continue = c(T,T),
+trajectory("A") %>%
+ seize("counter1", 1) %>%
+ timeout(function() runif(1, 10, 15)) %>%
+ release("counter1", 1),
+ trajectory("B") %>%
+ seize("counter2", 1) %>%
+ timeout(function() rnorm(1, 10, 1)) %>%
+ release("counter2", 1)
+)
+#library(simmer.plot)
+#plot(customer, verbose = T)
+set.seed(123)
+envs <- lapply(1:200, function(i) {
+simmer("Bank") %>%
+ add_resource("counter1", 1) %>%
+ add_resource("counter2", 1) %>%
+ add_generator("customer", customer, function() rexp(1, 1/4)) %>%
+ run(360)
+})
+# The Overall Average Queue Size
+resources = get_mon_resources(envs)
+mean(resources$queue)
+## [1] 7.432434
+# The Average Queue Size per Counter
+aggregate(resources$queue, by = list(resources$resource), FUN = mean)
+## Group.1 x
+## 1 counter1 8.868399
+## 2 counter2 6.124220
+# The Overall Average Waiting Time
+arrivals <- get_mon_arrivals(envs, per_resource = T)
+waitingTime = (arrivals$end_time - arrivals$start_time) - arrivals$activity_time
+arrivals2 = cbind(arrivals, waitingTime)
+aggregate(arrivals2$waitingTime, by = list(arrivals2$resource), FUN=mean)
+```
+```{r}
+#Section 8
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.

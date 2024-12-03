@@ -1,0 +1,1173 @@
+---
+title: "R Notebook"
+output:
+  word_document: default
+  html_notebook: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+#Notes:
+
+#Similar to philosophical conversations, it appears alot of the initial work is defining terms. Consider what is needed for a conversation. The idea is to move from the most basic place and then increase sophistication. (Language -> Sentences -> Rheotric)
+
+#Language = Which is determined on the onset, thankfully coding language come with constraints inherently so it simply must be learned not created. 
+
+#Propositions = once we can communicate, it must happen effectively
+```
+
+
+
+```{r}
+#Redo for homework 2
+#First video, Monte-Carlo simulation (The more instances the better)
+
+#I set my working directory to be the entire computer. 
+
+#We are trying to decide which is cheaper. To outsource or manufacturer our product. We will now code using the mean and sd we have to decide.
+
+tc_manu <- function(q){
+  return(50000 + 125*q)
+}
+
+#This function is about the manufacturer variable. The function is taking the cost per unit and fixed cost associated with manufacturing. These are constants so the function assigns it to the variable. 
+
+# I am curious why we did not just assign the equation to the variable w/o the function?
+
+tc_out <- function(q){
+  return (175*q)
+}
+
+#Similar thought process as above.
+
+#Q is the production volume. I understand that we assume the mean (average production level) and standard deviation (amount of variation among the production levels).
+
+# If we assume our production volumen is 3000, then
+
+#cost of manu:
+
+tc_manu(3000)
+```
+
+
+```{r}
+#cost of outsource:
+
+tc_out(3000)
+```
+```{r}
+#Setting a seed ensures that the same (pseudo-)random numbers will be generated each time the script is executed.
+
+set.seed(123)
+
+#I need to deepen my understanding of how this line of code produces what we want when we run n amount of simulations
+
+#random sample size
+num_sim = 1000
+
+#create normally distributed random numbers: 
+q <- rnorm(num_sim, mean = 1050, sd = 100) #generate your data
+
+#This line above is a culmination of so many variables. The rnorm is a function that assumes a normal distribution ##(which is confusing since I had to declare the mean and sd, if i am declaring the mean and sd, shouldn't that determined the distribution?)
+#The num_sim is the sample size, which is the total iterations of the random numbers we generated.
+#The mean was given
+#The standard deviation was given
+##We now have a way to generate work volume based on random iterations, thus we are going to answer the question of which is more productive through random test (simulations) based on given periameters (montecarlo).
+
+#cost of manu: This function now equipped will show 1,000 possible costs for manufacturing considering the parameters I fed the argument.
+
+tc_manu(q)
+
+tcm <- tc_manu(q)
+
+#Now we are taking the manufacturing function and its parameters, and the q function and its parameters and condensing them into a variable.
+```
+
+```{r}
+#cost of outsource: This function now equipped will show 1,000 possible costs for outsourcing considering the parameters I fed the argument.
+
+
+tc_out(q)
+
+tco <- tc_out(q)
+```
+```{r}
+#What is the chance that outsourcing is more cost productive than manufacturing.
+#This is where averaging (mean) comes in handy, we have demonstrated that 2K instances produce different figures. Now we need to average individually, then find the difference in those averages to determine the best way forward.
+
+mean(tc_manu(q)<tc_out(q))
+
+#The consolidation was not necessary so long as both functions are included on both sides. It does help make things more concise (Occam razor/K.I.S.S./How concise can you make it?)
+```
+
+```{r}
+#Video 2 (Generating random numbers)
+
+#LCG
+
+#Pseudo-random Numbers
+#A sequence of pseudo-random numbers is a sequence of numbers between 0 and 1 having the same relevant statistical properties as a sequence of truly uniformly random numbers.
+
+#linear congruential generator (LCG) algorithm. It is known as recursive because each value produces the next value.
+
+#Bounds 0 - m-1, there is no limit to the upper bound. The m stands for mode, mode finds that remainder after division of one number from another.
+
+#I.e 5m2 is What is 5 divided by 2, the answer is 2 and 1 is left over. The answer then is 1
+
+#It is important that you read the handouts you saved from this lecture to understand what each component of the LCG function means.
+
+#Here is a simple problem: This can be solved by hand easily, check notes
+
+a = 5
+c = 1
+m = 8
+R0 = 5
+R1 = (a*R0 + c) %% m
+(U1 = R1/m)
+## [1] 0.25
+
+
+# The following function implements a linear congruen tial generator with the given parameters above.
+lcg.rand <- function(n, m, a, c, R0) { 
+#Language, the name of the function is the algorithm and what it does = easy
+  #Function, He must define new words in order to build sentences. Typically these parameters are given along with the algorithm. However if you are building the sentence (algorithm) then you have to define the parameters and give them a name
+ if(a <= 0 ) stop ('a is not positive')
+  #Now that the terminology is clear, he tells the brain what to do if a proposition is false as it can evaluate fallacies and bad inferences, it just needs clarity on what truth (argument) you are pursuing
+ if(c < 0 ) stop ('c is not non-negative')
+  #More conditions
+ if(m <= max(a,c,R0)) stop ('m is not more than max(
+a,c,R0)')
+  #This one makes sense but does not. Essentially it is a validation point that says if this condition is met, end sequence because the answer would be nonsense. I am just not sure how to articulate that from a bottom up approach.
+ if(any(R0 < 0 | R0 > (m-1))) stop ('R0 is not betwe
+en 0 and m-1')
+  #Another confusing validation point
+
+ U <- vector(length = n)
+ #Complex assignment, would need to ask him about this and read on vectors.
+ R <- R0
+ #R0 was included above, it is now being assigned to a variable.
+ #The function starts off with definitions and exceptions, moves to more complex definitions where in stead of defining words, we begin to define sentences [multiple words are given a specific meaning at once]
+ for (i in 1:n) {
+   #The for loop is a unique sentence, it is not an assignment or exception management like everything above, this is actually a command. It says for each upcoming variable, execute the instructions according to the parameters above and below until you cannot anymore.
+ R <- (a * R + c) %% m
+ U[i] <- R / m
+ }
+
+ return(U)
+}
+#Brilliant
+# Print 9 random numbers on the interval [0, 1)
+lcg.rand(n = 9, m = 8, a = 5, c = 1, R0 = 5)
+```   
+
+```{r}
+ runif(9)
+#Give me random numbers but unlike set seed it does not give me the same number. Look this up.
+
+## Generate 1000 exponential random numbers with lambda = 0.75
+# first, we make 1000 uniform random numbers. Nothing special here but still need to learn the difference between runif and set.seed
+u = runif(1000)
+# then, we implement the inverse formula. Using uniform distribution + lambda + log we can create a exponential random distribution. How does this connect back to the first section?
+lambda = 0.75
+x = (-1/lambda)*log(1-u)
+hist(x)
+
+```
+```{r}
+# you can compare it with the exponential random number generator in R. 
+#This is a big take away for me, commonly notation moves towards algorithms. Thus is very easy to notate most data. To then be able to notate further, past an mathematical representation into an electronic mind that not only already can detect bad inferences and unsound premises, but has a pre-built lexicon of mathematical algorithms defined as simple terminology, now I can take a language, convert it to math, convert math to a computer language, discover the conclusion of the argument, convert back to math, then back to the original language.
+x = rexp(1000, lambda)
+hist(x)
+#Rexp, rnorm, runif are all apart of this prebuilt mathematical lexicon.
+```
+```{r}
+# Here, we create 1000 random numbers based on the empirical distribution (the table above).
+#This is an empirical discrete distribution, thus the entire distribution is based off of historical data.
+nsim = 1000
+xRange <- c(1,2,3,4)
+p <- c(0.7, 0.2, 0.08, 0.02)
+#Define your terminology. R, this is how many I want based on a pre-set term that you use called "nsim" which just needs to be assigned a value. Using the "c" item is a pre-set term that corresponds to columns (or is it count?). I need that range as my empirical distribution also has 4 values so that is captured here.
+##It is almost like a photo graph. When I take a concept, and notate it mathematically, then represent it visually in some way. This does allow for easier conceptualization, yet you need to take a "photo" of it when you code. Thus you need to transfer everything you see visually into the coding language. You can do that by purely defining terms or by leveraging pre built terms and reassigning values. Finally the corresponding percentages are converted.
+x <- sample(xRange, nsim, p, replace= TRUE)
+#Using a prebuilt function sample (which must have a for loop built into it as it automatically processes all 4 iterations saved in both ranges) we put everything into one sentence or argument. If it is valid and sound, our logic buddy will tell us what the conclusion has to be.
+#Apparently setting replace to "true" has the ability to ensure that each number is Identical and Independent (IID). That is a huge deal I need to ask about.
+head(x)
+```
+```{r}
+table (x)
+#WE have successfully replicated our parameters using random numbers bound by the empirical discrete distribution
+```
+```{r}
+hist(x)
+```
+```{r}
+# The following are all parametric discrete distributions.
+```
+
+
+```{r}
+##There are two types, discrete and continuous. Remember we learned the difference between nominal, ordinal, discrete and continuous values early in stats.
+
+
+#Parametric Discrete Uniform Distribution
+# You can simulate discrete uniform data by sampling with replacement without weighting (compare it with the empirical discrete distribution).
+x = sample(1:20, nsim, replace = T)
+table(x)
+## x
+## 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+## 61 40 52 51 43 48 46 51 55 66 54 45 58 55 39 51 48 36 54 47
+hist(x)
+```
+
+```{r}
+#parametric discrete distribution for the binomial distribution
+
+nsim = 1000
+# Binomial with p = 0.5, n = 10
+# p is the probability of success, and n is the number of trials
+x = rbinom(nsim, size=10, p=0.5) # x is the number of successes in 10 trials
+hist(x)
+```
+
+```{r}
+#The parametric discrete distribution for negative binomial distribution is a discrete probability distribution that models the number of successes in a sequence of independent and identically distributed Bernoulli trials before a specified (non-random) number of failures (denoted r) occurs. 
+
+# Negative Binomial with p = 0.5, r = 6
+# (p is the probability of success, and r is the target number of successes)
+x = rnbinom(nsim, size = 6, p = 0.5)
+# x is the number of failures untill acheiving the r_th success.
+hist(x)
+```
+
+```{r}
+##The Parametric Poisson distribution is a discrete probability distribution that expresses the probability of a given number of events occurring in a fixed interval of time or space if these events occur with a known constant mean rate and independently of the time since the last event
+
+# Poisson distribution with lambda = 20 (For example, the arrival rate to a restaurant is 20 per hour)
+x = rpois(nsim, lambda = 20)
+hist(x)
+```
+
+```{r}
+##The Parametric hypergeometric distribution is a discrete probability distribution that describes the probability of x successes (random draws for which the object is drawn has a specified feature) in k draws, without replacement, from a finite population of size n+m that contains exactly m objects with that feature, wherein each draw is either a success or a failure
+
+# Check out the Wikipedia for more information (https ://en.wikipedia.org/wiki/Hypergeometric_distribution) with m = 2, n = 8, k = 5
+# m: the number of white balls in the urn.
+# n: the number of black balls in the urn.
+# k: the number of balls drawn from the urn.
+# x is the outcome of the simulation, which refers to the achieved number of white balls from k draws
+x = rhyper(nsim, m = 2, n = 8, k = 5)
+head(x)
+
+#The sampling is without replacement.
+hist(x)
+```
+
+```{r}
+##Parametric Continuous distributions
+```
+
+```{r}
+#The continuous Uniform distribution or rectangular distribution is a family of symmetric probability distributions. The distribution describes an experiment where an arbitrary outcome lies between certain bounds.
+```
+
+```{r}
+nsim = 1000
+# Uniform distribution with min = 1, and max = 20.
+x = runif(nsim, min=1, max=20)
+hist(x)
+```
+
+```{r}
+#Normal distribution, also known as the Gaussian distribution, is a symmetric probability distribution about the mean, showing that data near the mean are more frequent in occurrence than data far from the mean. In the lecture the professor points out the the lower and upper bound of this distribution is infinity, thus the truncated is preferred in cases where the bounds need to be restricted. I am sure you can specify bounds in most distributions but I could be wrong.
+```
+
+```{r}
+# Normal Distribution with mean = 2, and sd = 1
+x = rnorm(nsim, mean = 2, sd = 1)
+hist(x)
+```
+
+```{r}
+# Truncated normal Distribution with a = 0, b = 5, me an = 2, and sd = 1
+# Goal is to have a lower and upper bound for the pro duced numbers.
+library(truncnorm)
+# You may need to install "truncno rm"
+x = rtruncnorm(nsim, a = 0, b = 5, mean = 2, sd = 1)
+hist(x)
+```
+
+```{r}
+#The exponential distribution is the probability distribution of the time between events in a Poisson point process, i.e., a process in which events occur continuously and independently at a constant average rate.
+```
+
+```{r}
+# Exponential Distribution with lambda = 20 (numberof arrival per unit of time)
+x = rexp(nsim, rate = 20)
+# x is the time between arrivals.
+hist(x)
+```
+
+```{r}
+#The triangular distribution is a continuous probability distribution with a lower limit a, upper limit b, and mode c, where a ≤ c ≤ b. 
+```
+
+```{r}
+# Triangular Distribution with a = 1, b = 20, c = 5
+# a: minimum value
+# b: maximum value
+# c: most likely value
+library(triangle)
+## Warning: package 'triangle' was built under R version 3.5.3
+x = rtriangle(nsim, a=1, b=20, c=5)
+hist(x)
+```
+
+
+```{r}
+#A log-normal distribution is a continuous probability distribution of a random variable whose logarithm is normally distributed. This distribution can be beneficial for modeling roughly symmetric data or skewed to the right, and Lognormal is extremely useful when analyzing stock prices. 
+```
+
+```{r}
+# Log-Normal Distribution with meanlog = 0, sdlog = 1
+x = rlnorm(nsim, meanlog = 0, sdlog = 1)
+hist(x)
+```
+```{r}
+hist(log(x))
+#
+```
+
+
+
+```{r}
+mean(log(x))
+## [1] 0.01390393
+sd(log(x))
+## [1] 1.06073
+# log of x is normally distributed.
+hist(log(x))
+```
+
+
+```{r}
+#The gamma distribution is a two-parameter family of continuous probability distributions. The exponential, normal, and chi-square distribution are special cases of the gamma distribution.
+```
+
+```{r}
+# Gamma distribution with parameters shape = 2 and scale = 10.
+x = rgamma(nsim, shape = 2, scale = 10)
+hist(x)
+```
+
+```{r}
+# When shape = 1, gamma is exactly similar to exponential distribution with rate = 1/scale
+dgamma(2, shape = 1, scale = 10)
+## [1] 0.08187308
+dexp(2, rate = 1/10)
+## [1] 0.08187308
+# for larger shape values, gamma merges to normal distribution.
+y = rgamma(nsim, shape = 20, scale = 10)
+hist(y)
+```
+```{r}
+library(truncnorm)
+## Warning: package ‘truncnorm’ was built under R version 3.5.3
+#We need to bring in a specific lexicon to conduct a specific argument
+set.seed(123)
+num_sim = 1000
+#generate your data for quantity sold (larger simulation size is better). Set.seed determines how the random numbers behave and the other set determines how many simulations we will run. 
+Q <- runif(num_sim, 8000,12000)
+#This variable contains a function that will run the specified number of tests, it will apply t
+P <- rtruncnorm(num_sim, a = 1, mean=10, sd=3)
+v <- rtruncnorm(num_sim, a = 3.5, b = 10, mean=7, sd=2)
+F <- 5000
+TP <- Q*P - (Q*v +F)
+mean(TP)
+## [1] 25662.25
+hist(TP)
+```
+
+```{r}
+# Risk of zero or negative profit:
+mean(TP <= 0)
+## [1] 0.214
+```
+
+```{r}
+library(truncnorm)
+set.seed(123)
+num_sim = 100000
+#generate your data for quantity sold (larger simulation size is better)
+Q <- runif(num_sim, 8000,12000)
+P <- rtruncnorm(num_sim, a = 1, mean=10, sd=3)
+v <- rtruncnorm(num_sim, a = 3.5, b = 10, mean=7, sd=
+2)
+library(triangle)
+F <- rtriangle(num_sim, a = 4500, b = 6000, c = 5000)
+TP <- Q*P - (Q*v +F)
+# Expected profit in a long-run:
+mean(TP)
+```
+```{r}
+hist(TP)
+```
+
+```{r}
+# Risk of zero or negative profit:
+mean(TP <= 0)
+## [1] 0.22132
+```
+
+```{r}
+# Data
+marketSize = 2e6
+marketSizeGrowth = 0.03
+marketShare = 0.08
+marketShareGrowth = 0.2
+unitRevenue = 130
+unitCost = 40
+discountRate = 0.09
+
+# Project Cost
+rdCost = 700e6
+clinicalCost = 150e6
+projectCost = rdCost + clinicalCost
+projectCost
+## [1] 8.5e+08
+
+#Model
+AnnualProfit = function(year, marketSize, marketSizeGrowth
+, marketShare, marketShareGrowth, unitRevenue, unitCost){
+ marketSize = marketSize*(1+marketSizeGrowth)^(year-1)
+ marketShare = marketShare*(1+marketShareGrowth)^(year-1)
+ sale = marketSize*marketShare
+ annualRevenue = 12*sale*unitRevenue
+ annualCost = 12*sale*unitCost
+ return(annualRevenue-annualCost)
+}
+
+# Annual profit of the first 5 years
+
+n_year = 5
+Annual_profit <- AnnualProfit(1:n_year, marketSize, marketSizeGrowth, marketShare, marketShareGrowth, unitRevenue, unitCost)
+year <- 1:n_year
+data.frame(Annual_profit)
+
+## Annual_profit
+#1 172800000
+#2 213580800
+#3 263985869
+#4 326286534
+#5 403290156
+
+# Cumulative Annual profit of the first 5 years
+#Cumulative_Annual_profit <- cumsum(Annual_profit)> data.frame(Cumulative_Annual_profit)
+
+## Annual_profit
+#1 172800000
+#2 386380800
+#3 650366669
+#4 976653203
+#5 1379943358
+
+# How long it will take to recover its fixed expenses
+#Cumulative_Annual_profit - projectCost
+## [1] -677200000 -463619200 -199633331 126653203 529943358
+
+# Company recover its fixed expenses by year 4.
+
+# Net-present value profit model
+netPresentProfit <- function(discountRate, Annual_profit, n_year){
+ netProfit <- 0
+ for(t in 1:n_year) {
+ netProfit <- netProfit + Annual_profit [t]/(1+discountRate)^t
+ }
+ return(netProfit)
+}
+# Net present value of Annual profits
+npvProfit <- netPresentProfit(discountRate, Annual_profit, n_year)
+# Net present value after deducting the fixed project cost
+npv = npvProfit - projectCost
+npv
+## [1] 185404860
+# The net present value over the first 5 years is $185,401,860
+```
+
+```{r}
+library(triangle)
+set.seed(123)
+
+# Non-stochastic parameters
+marketShare = 0.08
+unitRevenue = 130
+unitCost = 40
+discountRate = 0.09
+
+# Other parameters are stochastic, and we need to simulate them inside a for-loop.
+num_sim = 1000
+# Data
+n_year = 5
+# Here, we only produce one random variate for each parameter in each simulation iteration.
+# We repeat the process num_sim times.
+# Then, we record each calculated npv into a vector called simulated_npv.
+# we start with an empty vecto for simulated_npv.
+
+simulated_npv <- c()
+for(i in 1:num_sim){
+ marketSize = rnorm(1, 2e6, 4e5)
+ marketSizeGrowth = rtriangle(1, a = 0.02, b = 0.06,
+c = 0.03)
+ marketShareGrowth = rtriangle(1, a = 0.15, b = 0.25
+, c = 0.20)
+ 
+ # Project Cost
+ rdCost = runif(1, 600e6, 800e6)
+
+ clinicalCost = rnorm(1, 150e6, 10e6)
+
+ projectCost = rdCost + clinicalCost
+
+ # To masure
+ Annual_profit <- AnnualProfit(1:n_year, marketSize,
+marketSizeGrowth, marketShare, marketShareGrowth, unitRevenue, unitCost)
+
+ npvProfit <- netPresentProfit(discountRate, Annual_profit, year)
+
+ npv = npvProfit-projectCost
+ 
+  # In each iteration, we insert a simulated value of npv to simulated_npv.
+ simulated_npv <- c(simulated_npv, npv)
+}
+# Now, we have produced 1000 instances of npv recorded inside simulated_npv.
+# Q1: Risk: What proportion of times simulated_npv is not profitable?:
+mean(simulated_npv<=0)
+## [1] 0.177
+hist(simulated_npv)
+```
+
+```{r}
+set.seed(123)
+num_sim = 1000
+n_year = 3
+simulated_cumNetProfit <- c()
+for(i in 1:num_sim){
+ marketSize = rnorm(1, 2e6, 4e5)
+ marketSizeGrowth = rtriangle(1, a = 0.02, b = 0.06,
+c = 0.03)
+ marketShareGrowth = rtriangle(1, a = 0.15, b = 0.25
+, c = 0.20)
+ # Project Cost
+ rdCost = runif(1, 600e6, 800e6)
+
+ clinicalCost = rnorm(1, 150e6, 10e6)
+
+ projectCost = rdCost + clinicalCost
+
+ Annual_profit <- AnnualProfit(1:n_year, marketSize,
+marketSizeGrowth, marketShare, marketShareGrowth, unitRevenue, unitCost)
+
+ Annual_cum_profit <- cumsum(Annual_profit)
+
+ # This time, we do not need to find the net present profit. 
+
+# Instead we find the cumulative profit in year 3.
+t = 3
+
+ simulated_cumNetProfit <- c(simulated_cumNetProfit,
+Annual_cum_profit[t]-projectCost)
+}
+# Q2 Answer:
+mean(simulated_cumNetProfit>0)
+## [1] 0.091
+hist(simulated_cumNetProfit)
+```
+
+```{r}
+set.seed(123)
+num_sim = 1000
+n_year = 10
+ # Since we want to make simulation instances for each year, we create an empty matrix presenting each year as a column.
+
+simulated_Annual_cumNetProfit = matrix(nrow = num_sim
+, ncol = n_year)
+for(i in 1:num_sim){
+ marketSize = rnorm(1, 2e6, 4e5)
+ marketSizeGrowth = rtriangle(1, a = 0.02, b = 0.06,
+c = 0.03)
+ marketShareGrowth = rtriangle(1, a = 0.15, b = 0.25
+, c = 0.20)
+ # Project Cost
+ rdCost = runif(1, 600e6, 800e6)
+
+ clinicalCost = rnorm(1, 150e6, 10e6)
+
+ projectCost = rdCost + clinicalCost
+
+ Annual_profit <- AnnualProfit(1:n_year, marketSize,
+marketSizeGrowth, marketShare, marketShareGrowth, unitRevenue, unitCost)
+
+ Annual_cum_profit <- cumsum(Annual_profit)
+ Annual_cumNetProfit <- Annual_cum_profit - projectCost
+ # In each iteration, we insert a vector of 10 years Annual_cumNetProfit to each row of the simulated_Annual_cumNetProfit matrix.
+
+ simulated_Annual_cumNetProfit[i,] <- Annual_cumNetProfit
+}
+boxplot(simulated_Annual_cumNetProfit, main = "Cumula
+tive Net Profit Boxplots", xlab = "Year")
+abline(h = 0, col = "red")
+```
+
+```{r}
+# Data
+R = 18 # Selling price
+C = 12 # Cost
+S = 9 # Discount Price
+# Model
+netProfitFun = function(D, Q, R, S, C){
+ R*min(D,Q) + S * max(0, Q-D) - C*Q
+}
+# If D is given, the best solution Q = D. Suppose that the store owner kept records for the past 20 years on the number of boxes sold. The historical candy sales average is 44.05.
+
+
+histDemand = read.csv("histDemand.csv") 
+
+# File is attached on Blackboard
+histDemand$Sales
+## [1] 42 45 40 46 43 43 46 42 44 43 47 41 41 45 51 43 45 42 44 48
+mean(histDemand$Sales)
+```
+
+```{r}
+# Based on average historical data (we round it down to the nearest integer)
+mean_D = 44
+# Rationally, we make 44 boxes
+Q = 44
+netProfitFun(mean_D, Q, R, S, C)
+## [1] 264
+```
+
+```{r}
+# Assuming we make 44 boxes
+Q = 44
+hist_D = histDemand$Sales
+profitVector <- c()
+for (i in 1:length(hist_D)) {
+ profitVector[i] = netProfitFun(hist_D[i], Q, R, S,
+C)
+}
+# Or you can use sapply function instead of for-loop
+# profitVector = sapply(hist_D, netProfitFun, Q, R, S, C)
+
+mean(profitVector)
+## [1] 255
+```
+
+
+```{r}
+set.seed(123)
+num_sim = 10000
+# Here, we assume that the data generation process follows the empirical distribution of the historical data
+sim_D <- sample(hist_D, num_sim, replace = TRUE) # resampling
+profit_sim <- c()
+for (i in 1:num_sim) {
+ profit_sim[i] = netProfitFun(sim_D[i], Q, R, S, C)
+}
+mean(profit_sim) 
+## [1] 255.0594
+# This is the expected profit given the historical data empirical distribution (this method of simulation is called Bootstrapping).
+```
+
+```{r}
+# Recall Data Again
+R = 18 # Selling price
+C = 12 # Cost
+S = 9 # Discount Price
+# Q = 44 is suggested. Is it the best? If not, what Q do you suggest?
+num_sim = 1000
+# We evaluate a range of possible Q values
+Qrange = 40:50
+sim_D <- sample(hist_D, num_sim, replace = TRUE) # resampling
+# For each possible Q we simulate num_sim times, so for recording simulation values we need a matrix (Qs are for each column)
+profitMatrix <- matrix(nrow = num_sim, ncol = length(
+Qrange))
+j = 0
+for (Q in Qrange) {
+ j = j+1
+ for (i in 1:num_sim) {
+ profitMatrix[i, j] = netProfitFun(sim_D[i], Q, R,
+S, C)
+ }
+}
+# Expected (average) profit for each Q
+profit_for_each_Q <- colMeans(profitMatrix)
+cbind(Qrange, profit_for_each_Q)
+```
+
+```{r}
+plot(Qrange, profit_for_each_Q, ylab = "Expected Prof
+it", xlab = "Q")
+best_Q_index <- which.max(profit_for_each_Q)
+abline(v = Qrange[best_Q_index], h = profit_for_each_Q[best_Q_index], col = "red")
+
+```
+
+```{r}
+# Recall Data Again
+R = 18 # Selling price
+C = 12 # Cost
+S = 9 # Discount Price
+# Q = 44 is suggested. Is it the best? If not, what Q
+#40 42 44 46 48 50 240 245 250 255
+Q
+#Expected Profit do you suggest?
+num_sim = 1000
+# We evaluate a range of possible Q values
+Qrange = 40:50
+# Here, we need to change the data generating process to truncnorm distribution
+
+library(truncnorm)
+sim_D <- rtruncnorm(num_sim, a = 38, mean = 42, sd =
+3.4) # resampling
+profitMatrix <- matrix(nrow = num_sim, ncol = length(
+Qrange))
+j = 0
+for (Q in Qrange) {
+ j = j+1
+ for (i in 1:num_sim) {
+ profitMatrix[i, j] = netProfitFun(sim_D[i], Q, R,
+S, C)
+ }
+}
+# Expected (average) profit for each Q
+profit_for_each_Q <- colMeans(profitMatrix)
+cbind(Qrange, profit_for_each_Q)
+```
+
+
+```{r}
+#Input Analysis
+
+data = read.csv("histDemand.csv")
+data 
+```
+
+```{r}
+# 1. Data is discrete.
+# 2. visualize data
+hist(data$Sales, main="Historical Demand")
+```
+
+```{r}
+# Time Series Plot
+plot(data$Sales, type="b", main="Historical Demand",
+ylab = "Count", xlab = "Each Year")
+```
+
+
+```{r}
+# There is no noticeable trend in the time-series plo
+t
+# Autocorrelation Plot
+acf(data$Sales)
+```
+
+
+```{r}
+# The autocorrelation plot shows no significant correlation for observation number (all lags are well with in the confidence band without following a pattern). Therefore, the data appears to be stationary (IID).
+
+# 3. Hypothesizing distributions.
+library(fitdistrplus)
+descdist(data$Sales, discrete = TRUE)
+```
+
+```{r}
+# 4- Applying goodness of fit for the candidate distributions
+
+# We first evaluate Negative Binomial
+fit.nbinom = fitdist(data$Sales, "nbinom")
+summary(fit.nbinom)
+```
+
+```{r}
+# Then, we evaluate Poisson
+
+fit.pois = fitdist(data$Sales, "pois")
+summary(fit.pois)
+```
+
+```{r}
+# We choose the larger loglikelihood value. Here, both Poisson and Negative Binomial can be selected.
+
+# Applying goodness-of-fit on Poisson:
+gofstat(fit.pois)
+```
+
+```{r}
+# H0: Data is distributed by Poisson distribution
+# Test is rejected. p-value < 0.05
+# Therefore, it is better to try to fit continuous distributions; otherwise, use resampling (sampling with replacement) for simulation
+```
+
+```{r}
+# If we assume data is continuous.
+
+library(fitdistrplus)
+descdist(data$Sales, discrete = FALSE)
+```
+
+```{r}
+fit.gamma <- fitdist(data$Sales, "gamma")
+summary(fit.gamma)
+```
+
+```{r}
+fit.weibull <- fitdist(data$Sales, "weibull")
+summary(fit.weibull)
+```
+
+```{r}
+fit.norm <- fitdist(data$Sales, "norm")
+summary(fit.norm)
+```
+
+```{r}
+plot(fit.gamma)
+```
+
+```{r}
+plot(fit.weibull)
+```
+
+
+```{r}
+plot(fit.norm)
+```
+
+
+```{r}
+g <- gofstat(fit.gamma)
+g$chisqpvalue
+```
+
+
+```{r}
+summary(fit.gamma)
+```
+
+```{r}
+# Data
+R = 18 # Selling price
+C = 12 # Cost
+S = 9 # Discount Price
+
+# Model
+netProfitFun = function(D, Q, R, S, C){
+ R*min(D,Q) + S * max(0, Q-D) - C*Q
+}
+num_sim = 1000
+Qrange = 40:50
+sim_D = rgamma(num_sim, shape = 295.63, rate = 6.71)
+profitMatrix <- matrix(0, nrow = num_sim, ncol = length(Qrange))
+j = 0
+for (Q in Qrange) {
+ j = j+1
+ for (i in 1:num_sim) {
+ profitMatrix[i, j] = netProfitFun(sim_D[i], Q, R,
+S, C)
+ }
+}
+
+# Expected (average) profit for each Q
+profit_for_each_Q <- colMeans(profitMatrix)
+cbind(Qrange, profit_for_each_Q)
+```
+
+```{r}
+plot(Qrange, profit_for_each_Q, ylab = "Expected Prof
+it", xlab = "Q")
+best_Q_index <- which.max(profit_for_each_Q)
+abline(v = Qrange[best_Q_index], h = profit_for_each_Q[best_Q_index], col = "red")
+```
+
+
+```{r}
+quantile(profitMatrix[, best_Q_index], c(0.025, 0.975))
+```
+
+
+```{r}
+#Bootstrapping
+
+library("car")
+data("Prestige")
+income <- Prestige$income
+mean(income)
+## [1] 6797.902
+2
+# What is the 95% confidence interval for the income mean?
+# A function for resampling and measureing mean:
+
+boot_mean <- function(x){
+ # Sampling with replacement to ensure IID outcomes
+ # The size of samples are the same as the size of sample x.
+  
+ boot_sample <- sample(x, replace = TRUE)
+# boot_sample <- sample(x, size = length(x), replace = TRUE)
+ # gives you the same size output, practice this by x= c(1,2,3)
+ return(mean(boot_sample))
+}
+set.seed(123)
+num_sim = 1000
+
+# Repeat resampling and measuring mean num_sim times:
+boot_mean_income_rep <- replicate(num_sim, boot_mean(
+income))
+
+# Bootstrapping answer
+conf_interval_mean <- quantile(boot_mean_income_rep,
+c(0.025, 0.975))
+conf_interval_mean
+## 2.5% 97.5%
+## 6015.705 7710.859
+hist(boot_mean_income_rep, xlab = "Mean Deman", freq
+= F)
+abline(v = mean(income), col = "blue", lwd = 2, lty = 2)
+abline(v = conf_interval_mean, col = "red", lwd = 2)
+```
+
+```{r}
+# CLT answer
+xbar = mean(income)
+#Xbar (+-) 1.96 * sigma/sqrt(n)
+ n = length(income)
+se <- qnorm(0.975)*sd(income)/sqrt(length(income))
+# low bound
+xbar - se
+## [1] 5973.916
+# upper bound
+xbar + se
+## [1] 7621.888
+# Now, you can compare the result of bootstrapping with CLT 
+```
+
+```{r}
+income <- Prestige$income
+sd(income)
+## [1] 4245.922
+# A function for resampling and measureing sd:
+boot_sd <- function(x){
+ boot_sample <- sample(x, replace = TRUE)
+ return(sd(boot_sample))
+ }
+
+set.seed(123)
+num_sim = 1000
+boot_sd_income_rep <- replicate(num_sim, boot_sd(income))
+# Bootstrapping answer
+conf_interval_sd <- quantile(boot_sd_income_rep, c(0.025, 0.975))
+conf_interval_sd
+
+## 2.5% 97.5%
+## 3093.638 5387.580
+hist(boot_sd_income_rep, xlab = "St-dev of Income", freq = F)
+abline(v = sd(income), col = "blue", lwd = 2, lty = 2)
+abline(v = conf_interval_sd, col = "red", lwd = 2)
+```
+
+```{r}
+#From CLT formula
+lb <- sd(income)*sqrt((n-1)/qchisq(0.975, df = n-1))
+ub <- sd(income)*sqrt((n-1)/qchisq(0.025, df = n-1))
+c(lb, ub)
+```
+
+
+```{r}
+#*** Since bootstrapping does not use normality assumption, we expect a higher precision from bootstrapping results than CLT estimations.
+
+income <- Prestige$income
+edu <- Prestige$education
+data <- cbind(income, edu)
+cor(data)
+
+
+cor(data)[1,2]
+## [1] 0.5775802
+# For bootstrapping correlation we sample from pairs of variables (entire row), that’s why we sample from row index below.
+boot_cor <- function(x){
+ rowIndex = sample(1:nrow(x), replace = TRUE)
+ boot_sample <- x[rowIndex,]
+ return(cor(boot_sample)[1,2])
+}
+set.seed(123)
+num_sim = 1000
+boot_cor_income_edu_rep <- replicate(num_sim, boot_cor(data))
+# Bootstrapping answer
+conf_interval_corr <- quantile(boot_cor_income_edu_rep, c(0.025, 0.975))
+conf_interval_corr
+## 2.5% 97.5%
+## 0.4624988 0.6853303
+hist(boot_cor_income_edu_rep, xlab = "Corr(Income, Ed
+ucation)", freq = F)
+abline(v = cor(data)[1,2], col = "blue", lwd = 2, lty
+= 2)
+abline(v = conf_interval_corr, col = "red", lwd = 2)
+```
+
+```{r}
+dat <- matrix(c(104,11037,189,11034),2,2, byrow=TRUE)
+dat
+## [,1] [,2]
+## [1,] 104 11037
+## [2,] 189 11034
+library(vcd)
+#### This package can help us measure the CI based on formula above.
+confint(oddsratio(dat, log=FALSE))
+## 2.5 % 97.5 %
+## / 0.4324132 0.6998549
+```
+
+```{r}
+# Bootstrapping
+## Create the original surveyed data
+## For Asprin:
+s1 <- rep(c(TRUE, FALSE), times = c(104, 11037-104))
+## For Placebo:
+s2 <- rep(c(TRUE, FALSE), times = c(189, 11034-189))
+## function for drawing a bootstrap sample
+## and estimating the bootstrap replicate
+boot_oddRatio <- function(s1, s2){
+8
+## odds ratio
+# Sampling with replacement
+boot_sample1 <- sample(s1, replace = TRUE)
+boot_sample2 <- sample(s2, replace = TRUE)
+odd1 <- sum(boot_sample1)/length(s1)
+odd2 <- sum(boot_sample2)/length(s2)
+oddsRatio <- odd1/odd2
+return(oddsRatio)
+}
+num_sim = 1000
+boot_odd_ratio_repl <- replicate(num_sim, boot_oddRatio(s1, s2))
+
+## confidence interval
+confidence_interval_odd_ratio <- quantile(boot_odd_ratio_repl, c(0.025, 0.975))
+confidence_interval_odd_ratio
+
+## 2.5% 97.5%
+## 0.4382004 0.6978075
+# Let’s look at the distribution of the odds ratio.
+hist(boot_odd_ratio_repl, xlab = "Odd Ratio", freq =
+F)
+abline(v = 0.55, col = "blue", lwd = 2, lty = 2)
+abline(v = confidence_interval_odd_ratio, col = "red"
+, lwd = 2)
+
+```
+
+
+```{r}
+food.s14 = read.csv("food-sp-14.csv")
+food.f14 = read.csv("food-fa-14.csv")
+
+fs = food.s14$food
+ff = food.f14$food
+fs
+## [1] 7 22 15 9 10 8 10 15 15 10 15 20 25 30 10 5 8 7 15 8
+ff
+## [1] 18 12 7 10 8 18 5 22 10 25 4 10 15 17 10 7 15 17 5 14 11 15 15
+
+## [24] 15 12 10 10 5 10 20 12 6
+# xBar1 - Xbar2
+diff = mean(fs) - mean(ff)
+diff
+## [1] 1.0125
+## Under the iid model, all data are from the same process. So pool the data to estimate the process distribution via the bootstrap distribution.
+
+alldata = c(fs,ff)
+
+# hist(alldata)
+# qq.obj = qqnorm(alldata)
+# agreement = cor(qq.obj$x, qq.obj$y)
+# agreement
+n1 = length(fs)
+n2 = length(ff)
+n1
+```
+
+
+```{r}
+## [1] 20
+n2
+## [1] 32
+## You can approximate the null distribution of the difference by simulating all data from the same distribution.
+# Null Hypothesis: Mu1 = Mu2 (H0: two samples have the same mean and came from the same distribution)
+
+## A good distribution to use is the bootstrap distribution of the combined data.
+boot_mean <- function(x, sampleSize){
+ boot_sample <- sample(x, sampleSize, replace = TRUE
+)
+ return(mean(boot_sample))
+}
+num_sim = 1
+xbar1.sim = replicate(num_sim, boot_mean(alldata, n1))
+xbar2.sim = replicate(num_sim, boot_mean(alldata, n2))
+## Now, the null distribution of the difference between averages is estimated using these Nsim differences:
+null.diff = xbar1.sim - xbar2.sim
+head(cbind(xbar1.sim, xbar2.sim, null.diff))
+## xbar1.sim xbar2.sim
+## [1,] 11.10 12.09375 -0.99375
+## [2,] 12.05 11.40625 0.64375
+## [3,] 11.25 11.53125 -0.28125
+## [4,] 12.60 12.78125 -0.18125
+## [5,] 14.65 12.59375 2.05625
+## [6,] 11.15 12.84375 -1.69375
+hist(null.diff, main="Bootstrap Null Distribution of
+Differences", freq=F, xlab = "Difference between aver
+ages", ylab = "estimated null density")
+## The observed difference and its negative are indicated by dashed vertical lines (this is not a confidence interval)
+
+abline(v = c(-abs(diff), diff), lty=2, col = 'blue')
+```
+
+
+```{r}
+## The two-sided p-value calculation by Monte-Carlo Simulation:
+in.right.tail <- (null.diff >= abs(diff))
+in.left.tail <- (null.diff <= -abs(diff))
+head(cbind(xbar1.sim, xbar2.sim, null.diff, in.right.tail, in.left.tail))
+## xbar1.sim xbar2.sim null.diff
+## [1,] 11.10 12.09375 -0.99375 0 0
+## [2,] 12.05 11.40625 0.64375 0 0
+## [3,] 11.25 11.53125 -0.28125 0 0
+## [4,] 12.60 12.78125 -0.18125 0 0
+## [5,] 14.65 12.59375 2.05625 1 0
+## [6,] 11.15 12.84375 -1.69375 0 1
+pval2 = mean(in.right.tail) + mean(in.left.tail)
+pval2
+## [1] 0.53389
+# p-value is not less than 0.05, so we fail to reject the null model:
+# Compare it with t-test:
+t.test(fs, ff)
+```
+
+
+```{r}
+## t = 0.57731, df = 33.341, p-value = 0.5676
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+## -2.554298 4.579298
+## sample estimates:
+## mean of x mean of y
+## 13.2000 12.1875
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbfit.norm <- fitdist(data$Sales, "norm")
+summary(fit.norm)ar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.

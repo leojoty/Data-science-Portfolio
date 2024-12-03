@@ -1,0 +1,633 @@
+# read in data from github repo
+df <- read.csv("https://raw.githubusercontent.com/mab754/ISQS-6350-Group-1-Project/main/WellLevelAttributesClass.csv")
+
+# establish short column names for easy readability
+colnames(df) <- c("WellName","Stages","Proppant","Fluid","Concentration","Length","RHOZ","DPHI_LIM","Spacing","Density","DPHI_SAN","Production")
+
+#missing
+colSums(is.na(df))
+##      WellName        Stages      Proppant         Fluid Concentration 
+##             0             0             0             0             0 
+##        Length          RHOZ      DPHI_LIM       Spacing       Density 
+##             0             0             0             0             0 
+##      DPHI_SAN    Production 
+##             0             0
+#percent missing
+colSums(is.na(df)) / nrow(df)
+##      WellName        Stages      Proppant         Fluid Concentration 
+##             0             0             0             0             0 
+##        Length          RHOZ      DPHI_LIM       Spacing       Density 
+##             0             0             0             0             0 
+##      DPHI_SAN    Production 
+##             0             0
+# change WellName to factor. Although it is a number, it is really just a text name
+df$WellName <- as.factor(df$WellName) 
+
+# preview the data
+head(df)
+##   WellName Stages Proppant    Fluid Concentration  Length    RHOZ DPHI_LIM
+## 1        1     26  1917.56  9134.03          0.21 2042.07 2606.25     0.06
+## 2        2     23  1399.17  8600.40          0.16 2074.35 2585.41     0.07
+## 3        3     30  1543.68  8598.45          0.18 2106.71 2597.29     0.07
+## 4        4     52  2562.47 12365.97          0.21 3011.50 2586.44     0.07
+## 5        5      8  1038.12  5238.95          0.20 1634.39 2605.53     0.06
+## 6        6     31  1573.12  9258.17          0.17 2240.94 2587.53     0.07
+##   Spacing Density DPHI_SAN Production
+## 1  248.05      14     0.03   37526.69
+## 2  242.34      15     0.04   29000.54
+## 3  164.54      14     0.03   36383.67
+## 4  171.20       6     0.04   82192.40
+## 5  642.03       8     0.03   27808.97
+## 6  178.64      14     0.04   37742.18
+# print out df shape
+paste("There are",ncol(df),"columns and",nrow(df),"rows in the data")
+## [1] "There are 12 columns and 200 rows in the data"
+# get numeric columns only
+numeric_columns <- unlist(lapply(df, is.numeric))
+df_numeric <- df[ , numeric_columns]
+paste("There are",ncol(df),"numeric columns in the data")
+## [1] "There are 12 numeric columns in the data"
+#install and load psych library for concise exploratory data analysis pairs plot
+#install.packages("psych")
+library(psych)
+## Warning: package 'psych' was built under R version 4.0.5
+# display pairs plot in console
+pairs.panels(df_numeric, 
+             method = "pearson", # correlation method
+             #hist.col = "#00bb6a",
+             density = TRUE,  # show density plots
+             lm = TRUE, # plot the linear regression red line
+             ellipses = TRUE, # show correlation ellipses
+             jiggle = TRUE, # jitter the data before plotting
+             factor = 1, # choose how much to jitter
+             stars = TRUE # show the statistical significance with stars, similar to fitting linear models 
+             )
+ 
+# save pairs plot to pdf for easier viewing and zooming
+pdf(file = "Exploratory Pairs Plot.pdf")
+pairs.panels(df_numeric, 
+             method = "pearson", # correlation method
+             #hist.col = "#00bb6a",
+             density = TRUE,  # show density plots
+             lm = TRUE, # plot the linear regression red line
+             ellipses = TRUE, # show correlation ellipses
+             jiggle = TRUE, # jitter the data before plotting
+             factor = 1, # choose how much to jitter
+             stars = TRUE # show the statistical significance with stars, similar to fitting linear models 
+             )
+dev.off()
+## png 
+##   2
+#install.packages("corrplot")
+library(corrplot)
+## corrplot 0.84 loaded
+corrplot(cor(df_numeric), method = 'number',type = 'lower')
+ 
+#The high positive correlation (all 0.9 or greater) of **Total # of Stages**, **Total Proppant**, **Total Fluid**, **Completed Length** to **12-month Production** suggests that getting the wells to their final stage is essential to maximize **12-month Production Production**.
+#The moderate negative correlation (-0.6) of **Well Spacing** to **Production** suggests that there is value in spacing the wells out to maximize **12-month Production**.
+
+par(mfrow=c(1,3))
+plot(df_numeric$Stages,
+     df_numeric$Production,
+     main="Spacing by Stages",
+     xlab="Stages (Frac Intervals)",
+     ylab="Spacing")
+qqnorm(df_numeric$Stages, 
+       frame = FALSE,
+       main = "Stages Q-Q Plot")
+qqline(df_numeric$Stages, col = "blue", lwd = 2)
+qqnorm(df_numeric$Production, 
+       frame = FALSE,
+       main = "Stages Q-Q Plot")
+qqline(df_numeric$Production, col = "blue", lwd = 2)
+ 
+#
+
+
+par(mfrow=c(1,2))
+plot(df_numeric$Stages,
+     df_numeric$Production,
+     main="Production by Stages",
+     xlab="Stages (Frac Intervals)",
+     ylab="Production")
+plot(df_numeric$Stages,
+     df_numeric$Spacing,
+     main="Spacing by Stages",
+     xlab="Stages (Frac Intervals)",
+     ylab="Spacing")
+ 
+#install.packages("ellipse")
+library(ellipse)
+## Warning: package 'ellipse' was built under R version 4.0.5
+## 
+## Attaching package: 'ellipse'
+## The following object is masked from 'package:graphics':
+## 
+##     pairs
+df_outliercheck <- df_numeric[c("Fluid","Concentration")]
+df_outliercheck_c <- colMeans(df_outliercheck)
+df_outliercheck_Cov <- cov(df_outliercheck)
+
+plot(jitter(df_numeric$Fluid),jitter(df_numeric$Concentration))
+points(ellipse(df_outliercheck_Cov, centre = df_outliercheck_c), type="l")
+points(ellipse(df_outliercheck_Cov, centre = df_outliercheck_c, level=.5), type="l")
+ 
+# outliers removed
+df_numeric <- df_numeric[df_numeric$Concentration > 0.15 ,]
+
+plot(jitter(df_numeric$Fluid),jitter(df_numeric$Concentration))
+points(ellipse(df_outliercheck_Cov, centre = df_outliercheck_c), type="l")
+points(ellipse(df_outliercheck_Cov, centre = df_outliercheck_c, level=.5), type="l")
+ 
+Visualization
+#install.packages("FNN")
+library(FNN)
+## Warning: package 'FNN' was built under R version 4.0.5
+set.seed(0)
+
+par(mfrow=c(2,2))
+#plot(df_numeric$Proppant,
+#     df_numeric$Production,
+#     main="Production vs. Proppant",
+#     xlab="Proppant",
+#     ylab="Production")
+yhat = knn.reg(train = df_numeric$Proppant, y = df_numeric$Production, k = 30)
+order = order(df_numeric$Proppant)
+plot(df_numeric$Proppant,
+     df_numeric$Production,
+     main="Production vs. Proppant",
+     xlab="Proppant",
+     ylab="Production")
+lines(df_numeric$Proppant[order],yhat$pred[order], col="red")
+plot(df_numeric$Proppant,
+     df_numeric$DPHI_LIM,
+     main="Proppant vs. DPHI LIM Porosity",
+     xlab="Proppant",
+     ylab="DPHI LIM Porosity")
+plot(df_numeric$Proppant,
+     df_numeric$DPHI_SAN,
+     main="Proppant vs. EPHI SAN Porosity",
+     xlab="Proppant",
+     ylab="EPHI SAN Porosity")
+plot(df_numeric$Spacing,
+     df_numeric$Production,
+     main="Production vs. Spacing",
+     xlab="Spacing",
+     ylab="Production")
+ 
+Confirmatory Factory Analysis
+sapply(1:2, function(f) factanal(df_numeric[,], factors = f)$PVAL)
+##    objective    objective 
+##  0.00000e+00 3.97624e-320
+#Using two factors with values of 0.000000e+00 and 3.976240e-320, we fail to reject the null hypothesis. 
+
+df_numeric_factors <- factanal(df_numeric, factors = 2)
+print(df_numeric_factors$loadings, cut = 0.3)
+## 
+## Loadings:
+##               Factor1 Factor2
+## Stages         0.989         
+## Proppant       0.968         
+## Fluid          0.992         
+## Concentration  0.361         
+## Length         0.919         
+## RHOZ                  -0.995 
+## DPHI_LIM               0.914 
+## Spacing       -0.752         
+## Density               -0.617 
+## DPHI_SAN               0.911 
+## Production     0.924         
+## 
+##                Factor1 Factor2
+## SS loadings      5.357   3.125
+## Proportion Var   0.487   0.284
+## Cumulative Var   0.487   0.771
+#We choose three factors with rotation and examine the factors. With a cutoff of 0.3 there is mutual exclusivity of the factors. There are high loadings in each factor, with each high value being a good indicator of the factor/component.
+
+print(df_numeric_factors$uniquenesses)
+##        Stages      Proppant         Fluid Concentration        Length 
+##    0.02257407    0.05962869    0.01365504    0.86032685    0.09673904 
+##          RHOZ      DPHI_LIM       Spacing       Density      DPHI_SAN 
+##    0.00500000    0.16021787    0.41852473    0.57938790    0.15644944 
+##    Production 
+##    0.14592627
+# Spacing, DPHI_SAN and Production are observed. to have the highest uniqueness out of all the variables.
+
+# extract correlation matrices
+Rcor <- df_numeric_factors$loadings %*% t(df_numeric_factors$loadings) + diag(df_numeric_factors$uniquenesses)
+df_numeric_cor <- cor(df_numeric)
+
+# check root mean squared error
+rmse <- sqrt(mean((df_numeric_cor - Rcor)^2))
+print(rmse)
+## [1] 0.1161268
+#We observe a low RMSE of 0.02
+
+
+# add a circle to help visualize the rotation:
+plot(df_numeric_factors$loadings, xlim = c(-1,1), ylim = c(-1,1))
+x = seq(-1,1,0.0001)
+y = sqrt(1-x^2)
+points(x, y, type = "l")
+points(x,-y, type = "l")
+# now rotate the circle to make the loadings line up with the axes
+points(df_numeric_factors$loadings, pch = 20)
+text(df_numeric_factors$loadings, colnames(df_numeric), cex=.8, col="blue")
+ 
+library(sem)
+## Warning: package 'sem' was built under R version 4.0.5
+ability_model <- specifyModel(text = "
+Physical -> Stages , lambda1, NA
+Physical -> Proppant , lambda2, NA
+Physical -> Fluid , lambda3, NA
+Physical -> Length , lambda4, NA
+Physical -> Spacing , lambda5, NA
+Physical -> Production , lambda6, NA
+Petrochemical -> RHOZ , lambda7, NA
+Petrochemical -> DPHI_LIM , lambda8, NA
+Petrochemical -> DPHI_SAN , lambda9, NA
+Petrochemical -> Concentration , lambda10, NA
+Petrochemical -> Density , lambda11, NA
+
+Physical <-> Petrochemical, rho , NA
+
+Stages <-> Stages , theta1 , NA
+Proppant <-> Proppant , theta2 , NA
+Fluid <-> Fluid , theta3 , NA
+Length <-> Length , theta4 , NA
+Spacing <-> Spacing , theta5 , NA
+Production <-> Production , theta6 , NA
+RHOZ <-> RHOZ , theta7 , NA
+DPHI_LIM <-> DPHI_LIM , theta8 , NA
+DPHI_SAN <-> DPHI_SAN , theta9 , NA
+Concentration <-> Concentration , theta10 , NA
+Density <-> Density , theta11 , NA
+Physical <-> Physical , NA , 1
+Petrochemical <-> Petrochemical , NA , 1
+")
+## NOTE: it is generally simpler to use specifyEquations() or cfa()
+##       see ?specifyEquations
+ability_sem <- sem(ability_model, df_numeric_cor, nrow(df_numeric))
+summary(ability_sem)
+## 
+##  Model Chisquare =  1828.665   Df =  43 Pr(>Chisq) = 0
+##  AIC =  1874.665
+##  BIC =  1601.487
+## 
+##  Normalized Residuals
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -6.97336 -0.11298  0.02621  0.54398  0.86621  7.82102 
+## 
+##  R-square for Endogenous Variables
+##        Stages      Proppant         Fluid        Length       Spacing 
+##        0.9801        0.9340        0.9855        0.8310        0.5685 
+##    Production          RHOZ      DPHI_LIM      DPHI_SAN Concentration 
+##        0.8533        1.0415        0.8083        0.7997        0.0067 
+##       Density 
+##        0.3502 
+## 
+##  Parameter Estimates
+##          Estimate    Std Error   z value     Pr(>|z|)    
+## lambda1   0.99001708 0.051026803  19.4019030 7.436689e-84
+## lambda2   0.96642897 0.052175777  18.5225601 1.358221e-76
+## lambda3   0.99274348 0.050891117  19.5072056 9.535406e-85
+## lambda4   0.91161484 0.054666740  16.6758589 1.963685e-62
+## lambda5  -0.75397445 0.060559266 -12.4501912 1.395106e-35
+## lambda6   0.92374289 0.054137771  17.0628170 2.806870e-65
+## lambda7   1.02052548 0.049821837  20.4834976 3.021628e-93
+## lambda8  -0.89907750 0.055345820 -16.2447228 2.434394e-59
+## lambda9  -0.89427291 0.055535984 -16.1025851 2.446652e-58
+## lambda10  0.08183511 0.069112358   1.1840879 2.363783e-01
+## lambda11  0.59179866 0.063822618   9.2725539 1.817412e-20
+## rho      -0.05645626 0.069227817  -0.8155141 4.147781e-01
+## theta1    0.01986575 0.003466211   5.7312576 9.968873e-09
+## theta2    0.06601466 0.007433468   8.8807348 6.642012e-19
+## theta3    0.01445995 0.003164396   4.5695758 4.887124e-06
+## theta4    0.16895771 0.017681387   9.5556819 1.227727e-21
+## theta5    0.43151996 0.043994973   9.8083924 1.036059e-22
+## theta6    0.14669904 0.015455359   9.4917911 2.270982e-21
+## theta7   -0.04147126 0.013100817  -3.1655476 1.547913e-03
+## theta8    0.19166054 0.021210172   9.0362559 1.621298e-19
+## theta9    0.20027669 0.021924219   9.1349520 6.543578e-20
+## theta10   0.99330509 0.100297784   9.9035597 4.017164e-23
+## theta11   0.64977532 0.064177265  10.1246963 4.293094e-24
+##                                          
+## lambda1  Stages <--- Physical            
+## lambda2  Proppant <--- Physical          
+## lambda3  Fluid <--- Physical             
+## lambda4  Length <--- Physical            
+## lambda5  Spacing <--- Physical           
+## lambda6  Production <--- Physical        
+## lambda7  RHOZ <--- Petrochemical         
+## lambda8  DPHI_LIM <--- Petrochemical     
+## lambda9  DPHI_SAN <--- Petrochemical     
+## lambda10 Concentration <--- Petrochemical
+## lambda11 Density <--- Petrochemical      
+## rho      Petrochemical <--> Physical     
+## theta1   Stages <--> Stages              
+## theta2   Proppant <--> Proppant          
+## theta3   Fluid <--> Fluid                
+## theta4   Length <--> Length              
+## theta5   Spacing <--> Spacing            
+## theta6   Production <--> Production      
+## theta7   RHOZ <--> RHOZ                  
+## theta8   DPHI_LIM <--> DPHI_LIM          
+## theta9   DPHI_SAN <--> DPHI_SAN          
+## theta10  Concentration <--> Concentration
+## theta11  Density <--> Density            
+## 
+##  Iterations =  107
+#If we were able to measure the correlation between the two Latent Variables is estimated to not be correlated, with a value of -0.06. 
+
+#The p-value for the Chi-squared goodness of fit test has a value of zero. We reject the null hypothesis that the actual and predicted values are similar. This indicates that this may not be a desirable model and alternates need evaluation. An indication of a good model would be a p-value of greater than 0.05 and we would fail to reject the null hypothesis. 
+
+#degrees of freedom
+dof = nrow(df_numeric_cor)*(nrow(df_numeric_cor)+1)/2 - length(ability_sem$coeff)
+
+#standard root mean squared residual (SRMR)
+dif <- ability_sem$C - ability_sem$S
+print(sqrt(mean(dif[lower.tri(dif, diag = TRUE)]^2)))
+## [1] 0.1731645
+# THe Standard Root Mean squared Residual has a value of 0.17, indicating a good model because it has a value of less than 0.08. 
+
+# set the vector of fit indicies that we want
+options(fit.indices = c("GFI", "AGFI", "SRMR"))
+print(summary(ability_sem))
+## 
+##  Model Chisquare =  1828.665   Df =  43 Pr(>Chisq) = 0
+##  Goodness-of-fit index =  0.4784132
+##  Adjusted goodness-of-fit index =  0.199425
+##  SRMR =  0.1731645
+## 
+##  Normalized Residuals
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -6.97336 -0.11298  0.02621  0.54398  0.86621  7.82102 
+## 
+##  R-square for Endogenous Variables
+##        Stages      Proppant         Fluid        Length       Spacing 
+##        0.9801        0.9340        0.9855        0.8310        0.5685 
+##    Production          RHOZ      DPHI_LIM      DPHI_SAN Concentration 
+##        0.8533        1.0415        0.8083        0.7997        0.0067 
+##       Density 
+##        0.3502 
+## 
+##  Parameter Estimates
+##          Estimate    Std Error   z value     Pr(>|z|)    
+## lambda1   0.99001708 0.051026803  19.4019030 7.436689e-84
+## lambda2   0.96642897 0.052175777  18.5225601 1.358221e-76
+## lambda3   0.99274348 0.050891117  19.5072056 9.535406e-85
+## lambda4   0.91161484 0.054666740  16.6758589 1.963685e-62
+## lambda5  -0.75397445 0.060559266 -12.4501912 1.395106e-35
+## lambda6   0.92374289 0.054137771  17.0628170 2.806870e-65
+## lambda7   1.02052548 0.049821837  20.4834976 3.021628e-93
+## lambda8  -0.89907750 0.055345820 -16.2447228 2.434394e-59
+## lambda9  -0.89427291 0.055535984 -16.1025851 2.446652e-58
+## lambda10  0.08183511 0.069112358   1.1840879 2.363783e-01
+## lambda11  0.59179866 0.063822618   9.2725539 1.817412e-20
+## rho      -0.05645626 0.069227817  -0.8155141 4.147781e-01
+## theta1    0.01986575 0.003466211   5.7312576 9.968873e-09
+## theta2    0.06601466 0.007433468   8.8807348 6.642012e-19
+## theta3    0.01445995 0.003164396   4.5695758 4.887124e-06
+## theta4    0.16895771 0.017681387   9.5556819 1.227727e-21
+## theta5    0.43151996 0.043994973   9.8083924 1.036059e-22
+## theta6    0.14669904 0.015455359   9.4917911 2.270982e-21
+## theta7   -0.04147126 0.013100817  -3.1655476 1.547913e-03
+## theta8    0.19166054 0.021210172   9.0362559 1.621298e-19
+## theta9    0.20027669 0.021924219   9.1349520 6.543578e-20
+## theta10   0.99330509 0.100297784   9.9035597 4.017164e-23
+## theta11   0.64977532 0.064177265  10.1246963 4.293094e-24
+##                                          
+## lambda1  Stages <--- Physical            
+## lambda2  Proppant <--- Physical          
+## lambda3  Fluid <--- Physical             
+## lambda4  Length <--- Physical            
+## lambda5  Spacing <--- Physical           
+## lambda6  Production <--- Physical        
+## lambda7  RHOZ <--- Petrochemical         
+## lambda8  DPHI_LIM <--- Petrochemical     
+## lambda9  DPHI_SAN <--- Petrochemical     
+## lambda10 Concentration <--- Petrochemical
+## lambda11 Density <--- Petrochemical      
+## rho      Petrochemical <--> Physical     
+## theta1   Stages <--> Stages              
+## theta2   Proppant <--> Proppant          
+## theta3   Fluid <--> Fluid                
+## theta4   Length <--> Length              
+## theta5   Spacing <--> Spacing            
+## theta6   Production <--> Production      
+## theta7   RHOZ <--> RHOZ                  
+## theta8   DPHI_LIM <--> DPHI_LIM          
+## theta9   DPHI_SAN <--> DPHI_SAN          
+## theta10  Concentration <--> Concentration
+## theta11  Density <--> Density            
+## 
+##  Iterations =  107
+#The adjusted goodness of fit index is 0.20, indicating this is not a good model. We are looking for a value of greater than 0.9.
+1.	Does proppant concentration correlate to production, and to what extent (fully answered by including market price for sand and natural gas)? Where is the point of diminishing returns?
+Proppant has a high positive correlation to production(0.94). The point of diminishing returns seems to be around when proppant reaches 2400 or greater. To visualize the point of diminishing returns, a KNN prediction (k=30) is made to see where the production levels off
+2.	Is there a relationship between prop concentration and average porosity? Should less sand be pumped in tighter porosity formations to avoid clogging up production pathways?
+There is no correlation between the two. More exploration/clustering is needed because PDHI LIM is bimodal and EPHI is trimodal.
+3.	How does well spacing affect well production (parent/child well effects)?
+As the number of Stages (number of hydraulically fractured intervals along the horizontal well bore) increases, we see a larger Production by the well. An interesting observation is that the higher spacing (more spread apart wells) have fewer stages. This could mean these higher spaced apart wells were more exploratory and speculative in nature, while the wells closer together have more fracturing intervals because they are clustered in known high-opportunity areas.
+4.	What data columns are the most correlated?
+add from chart
+5.	How do the most correlated columns help discover how to increase oil production?
+discussion
+ability_model <- specifyModel(text = "
+Physical -> Stages , lambda1, NA
+Physical -> Proppant , lambda2, NA
+Physical -> Fluid , lambda3, NA
+Physical -> Length , lambda4, NA
+Physical -> Spacing , lambda5, NA
+Physical -> Production , lambda6, NA
+Petrochemical -> RHOZ , lambda7, NA
+Petrochemical -> DPHI_LIM , lambda8, NA
+Petrochemical -> DPHI_SAN , lambda9, NA
+Petrochemical -> Concentration , lambda10, NA
+Petrochemical -> Density , lambda11, NA
+
+Physical <-> Petrochemical, rho , NA
+
+Stages <-> Stages , theta1 , NA
+Proppant <-> Proppant , theta2 , NA
+Fluid <-> Fluid , theta3 , NA
+Length <-> Length , theta4 , NA
+Spacing <-> Spacing , theta5 , NA
+Production <-> Production , theta6 , NA
+RHOZ <-> RHOZ , theta7 , NA
+DPHI_LIM <-> DPHI_LIM , theta8 , NA
+DPHI_SAN <-> DPHI_SAN , theta9 , NA
+Concentration <-> Concentration , theta10 , NA
+Density <-> Density , theta11 , NA
+Physical <-> Physical , NA , 1
+Petrochemical <-> Petrochemical , NA , 1
+")
+## NOTE: it is generally simpler to use specifyEquations() or cfa()
+##       see ?specifyEquations
+ability_sem <- sem(ability_model, abs(df_numeric_cor), nrow(df_numeric))
+## Warning in sem.default(ram, S = S, N = N, raw = raw, data = data, pattern.number
+## = pattern.number, : S is not positive-definite: expect problems
+## Warning in log(det(S)): NaNs produced
+## Warning in eval(substitute(expr), data, enclos = parent.frame()):  singular Hessian: model is probably underidentified.
+summary(ability_sem)
+## Warning in log(det(S)): NaNs produced
+## 
+##  Model Chisquare =  Inf   Df =  43 Pr(>Chisq) = 0
+##  Goodness-of-fit index =  0.390633
+##  Adjusted goodness-of-fit index =  0.06469258
+##  SRMR =  0.1521251
+## 
+##  Normalized Residuals
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -4.74585 -1.46748 -0.08904 -0.26174  0.28331  6.18938 
+## 
+##  R-square for Endogenous Variables
+##        Stages      Proppant         Fluid        Length       Spacing 
+##        0.9721        0.9393        0.9705        0.8645        0.6171 
+##    Production          RHOZ      DPHI_LIM      DPHI_SAN Concentration 
+##        0.8806        0.8177        0.7517        0.7403        0.1974 
+##       Density 
+##        0.6405 
+## 
+##  Parameter Estimates
+##          Estimate   Std Error   z value   Pr(>|z|)    
+## lambda1  0.98597646 0.051238108 19.243030 1.614857e-82
+## lambda2  0.96919655 0.052058071 18.617604 2.313366e-77
+## lambda3  0.98511440 0.051280735 19.210224 3.039520e-82
+## lambda4  0.92977526 0.053894458 17.251779 1.085072e-66
+## lambda5  0.78553800 0.059567252 13.187414 1.036815e-39
+## lambda6  0.93841569 0.053503578 17.539307 7.179759e-69
+## lambda7  0.90426456 0.056409809 16.030272 7.853881e-58
+## lambda8  0.86701624 0.057920118 14.969173 1.167649e-50
+## lambda9  0.86041761 0.058182868 14.788161 1.746616e-49
+## lambda10 0.44430894 0.070274711  6.322458 2.574343e-10
+## lambda11 0.80030653 0.060516028 13.224703 6.318594e-40
+## rho      0.25415933 0.070024607  3.629572 2.838919e-04
+## theta1   0.02785042 0.004544755  6.128036 8.897024e-10
+## theta2   0.06065806 0.007323634  8.282508 1.206080e-16
+## theta3   0.02954962 0.004665331  6.333873 2.390819e-10
+## theta4   0.13551796 0.014651231  9.249596 2.253431e-20
+## theta5   0.38293004 0.039326459  9.737211 2.092170e-22
+## theta6   0.11937600 0.013052222  9.146028 5.906518e-20
+## theta7   0.18230561 0.029698863  6.138471 8.331955e-10
+## theta8   0.24828284 0.033782085  7.349542 1.988876e-13
+## theta9   0.25968154 0.034594415  7.506458 6.074842e-14
+## theta10  0.80258956 0.082713423  9.703257 2.920260e-22
+## theta11  0.35950946 0.042614607  8.436296 3.275513e-17
+##                                          
+## lambda1  Stages <--- Physical            
+## lambda2  Proppant <--- Physical          
+## lambda3  Fluid <--- Physical             
+## lambda4  Length <--- Physical            
+## lambda5  Spacing <--- Physical           
+## lambda6  Production <--- Physical        
+## lambda7  RHOZ <--- Petrochemical         
+## lambda8  DPHI_LIM <--- Petrochemical     
+## lambda9  DPHI_SAN <--- Petrochemical     
+## lambda10 Concentration <--- Petrochemical
+## lambda11 Density <--- Petrochemical      
+## rho      Petrochemical <--> Physical     
+## theta1   Stages <--> Stages              
+## theta2   Proppant <--> Proppant          
+## theta3   Fluid <--> Fluid                
+## theta4   Length <--> Length              
+## theta5   Spacing <--> Spacing            
+## theta6   Production <--> Production      
+## theta7   RHOZ <--> RHOZ                  
+## theta8   DPHI_LIM <--> DPHI_LIM          
+## theta9   DPHI_SAN <--> DPHI_SAN          
+## theta10  Concentration <--> Concentration
+## theta11  Density <--> Density            
+## 
+##  Iterations =  0
+PCA
+# compute PCs
+df_pca <- princomp(df_numeric, cor = TRUE)
+
+biplot(df_pca, col = c("black","red"), cex = 0.6)
+ 
+# show result
+summary(df_pca, loading = TRUE)
+## Importance of components:
+##                           Comp.1    Comp.2    Comp.3     Comp.4     Comp.5
+## Standard deviation     2.3462126 1.7898963 1.2734425 0.46869945 0.42603901
+## Proportion of Variance 0.5004285 0.2912481 0.1474233 0.01997083 0.01650084
+## Cumulative Proportion  0.5004285 0.7916766 0.9390998 0.95907066 0.97557150
+##                            Comp.6      Comp.7      Comp.8      Comp.9
+## Standard deviation     0.36620319 0.249305842 0.200080802 0.151663733
+## Proportion of Variance 0.01219134 0.005650309 0.003639302 0.002091081
+## Cumulative Proportion  0.98776284 0.993413152 0.997052455 0.999143535
+##                             Comp.10      Comp.11
+## Standard deviation     0.0943141127 2.293380e-02
+## Proportion of Variance 0.0008086502 4.781446e-05
+## Cumulative Proportion  0.9999521855 1.000000e+00
+## 
+## Loadings:
+##               Comp.1 Comp.2 Comp.3 Comp.4 Comp.5 Comp.6 Comp.7 Comp.8 Comp.9
+## Stages         0.413                0.200  0.154  0.144         0.351  0.247
+## Proppant       0.413        -0.107               -0.188                0.355
+## Fluid          0.412  0.107         0.173        -0.181                0.368
+## Concentration  0.187        -0.669 -0.458 -0.347 -0.225  0.205 -0.106       
+## Length         0.408                0.293        -0.327 -0.470        -0.635
+## RHOZ                  0.533 -0.115                       0.383  0.595 -0.374
+## DPHI_LIM             -0.497  0.216  0.196 -0.661  0.137  0.371  0.222 -0.121
+## Spacing       -0.319        -0.432  0.737        -0.235  0.236 -0.164  0.132
+## Density               0.415  0.497        -0.194 -0.435  0.320 -0.424 -0.117
+## DPHI_SAN       0.104 -0.509        -0.198  0.574 -0.386  0.424        -0.137
+## Production     0.401        -0.131  0.113  0.188  0.584  0.323 -0.489 -0.264
+##               Comp.10 Comp.11
+## Stages         0.658   0.330 
+## Proppant      -0.632   0.484 
+## Fluid                 -0.777 
+## Concentration  0.284         
+## Length                       
+## RHOZ          -0.189  -0.111 
+## DPHI_LIM                     
+## Spacing                      
+## Density        0.152   0.188 
+## DPHI_SAN                     
+## Production    -0.121
+explained_vars <- df_pca$sdev^2/sum(df_pca$sdev^2)
+explains_vars_cum <- cumsum(explained_vars) / sum(explained_vars)
+print(explained_vars)
+##       Comp.1       Comp.2       Comp.3       Comp.4       Comp.5       Comp.6 
+## 5.004285e-01 2.912481e-01 1.474233e-01 1.997083e-02 1.650084e-02 1.219134e-02 
+##       Comp.7       Comp.8       Comp.9      Comp.10      Comp.11 
+## 5.650309e-03 3.639302e-03 2.091081e-03 8.086502e-04 4.781446e-05
+print(explains_vars_cum)
+##    Comp.1    Comp.2    Comp.3    Comp.4    Comp.5    Comp.6    Comp.7    Comp.8 
+## 0.5004285 0.7916766 0.9390998 0.9590707 0.9755715 0.9877628 0.9934132 0.9970525 
+##    Comp.9   Comp.10   Comp.11 
+## 0.9991435 0.9999522 1.0000000
+barplot(explained_vars,ylab="Explained Variance",main="PCA Variance Explained",las=2)
+par(new = TRUE,mar = c(5.1, 4.1, 2, 3))
+plot(explains_vars_cum,type="b", xaxt = "n", yaxt = "n", ylab = "", xlab = "")
+axis(side = 4)
+mtext("Cumulative Explained Variance", side = 4, line = 2)
+ 
+# Examining the explained variance of the principle components, it is determined that there is a natural break after the third component. This is also a satisfactory choice when considering the cumulative explained variance. After the third component, the cumulative variance explained is 99.7%.
+MDS
+cmd <- cmdscale(dist(scale(df_numeric)), k = 2)
+plot(cmd, xlab = "Coordinate 1", ylab = "Coordinate 2", main = "Multidimensional Scaling 2-D Plot", pch = 1)
+text(cmd)
+ 
+cmd <- cmdscale(dist(scale(df_numeric)), k = 2,eig = TRUE)
+round(cumsum(cmd$eig)/sum(cmd$eig),3)
+##   [1] 0.500 0.792 0.939 0.959 0.976 0.988 0.993 0.997 0.999 1.000 1.000 1.000
+##  [13] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+##  [25] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+##  [37] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+##  [49] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+##  [61] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+##  [73] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+##  [85] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+##  [97] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+## [109] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+## [121] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+## [133] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+## [145] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+## [157] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+## [169] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+## [181] 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+## [193] 1.000 1.000 1.000 1.000 1.000
+

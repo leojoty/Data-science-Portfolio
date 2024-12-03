@@ -1,0 +1,438 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+---
+title: "Homework 3"
+output: html_notebook
+ ---
+
+
+```{r}
+#x <- cbind(grad$FacTeaching, grad$FacKnowledge, grad$Housing)
+
+#colnames(r) <- c("French", "English", "History", "Arithmetic", "Algebra", "Geometry")
+#rownames(r) <- colnames(r)
+
+```
+
+
+```{r}
+#Question 1A
+r <- matrix(c(1.00, 0.44, 0.41, 0.29, 0.33, 0.25,
+              0.44, 1.00, 0.35, 0.35, 0.32, 0.33,
+              0.41, 0.35, 1.00, 0.16, 0.19, 0.18,
+              0.29, 0.35, 0.16, 1.00, 0.59, 0.47,
+              0.33, 0.32, 0.19, 0.59, 1.00, 0.46,
+              0.25, 0.33, 0.18, 0.47, 0.46, 1.00), nrow = 6, byrow = TRUE)
+
+colnames(r) <- c("French", "English", "History", "Arithmetic", "Algebra", "Geometry")
+rownames(r) <- colnames(r)
+r
+```
+
+```{r}
+# re-run EFA with two factors
+
+r.fa <- factanal(covmat= r, factors = 2)
+r.fa
+
+```
+```{r}
+# latent variable loadings
+
+
+r.fa$loadings[,1:2]
+
+```
+```{r}
+# SS loadings of latent variable 1
+
+t(r.fa$loadings[,1]) %*% r.fa$loadings[,1]
+
+```
+```{r}
+# proportion of variance explained by latent variable 1
+
+(t(r.fa$loadings[,1]) %*% r.fa$loadings[,1]) / 7
+
+```
+```{r}
+# Commonality of R variable
+c1 <- sum(r.fa$loadings[1,] * r.fa$loadings[1,])
+c1
+
+```
+```{r}
+2 - c1
+```
+
+
+```{r}
+#Question 1A
+
+#I would name the two factors "math based" and "writing based"
+```
+
+```{r}
+f.loading <- r.fa$loadings[,1:2]
+
+# Estimated correlation matrix
+corHat <- f.loading %*% t(f.loading) + diag(r.fa$uniquenesses)
+corHat
+
+```
+```{r}
+# Original correlation matrix
+cor(r)
+```
+
+```{r}
+# An RMSE of < 0.05 is generally acceptable
+rmse = sqrt(mean((corHat - cor(r))^2))
+rmse
+```
+```{r}
+
+r.fa <- factanal(covmat = r, factors = 3)
+r.fa
+```
+
+
+```{r}
+#Question 1B
+
+#I would name those factors primary "math based", "reading based", "writing based"
+
+```
+
+
+```{r}
+#Question 1C
+
+#The most common rotation is varimax for EFA rotations. This rotation is based on the assumption that interpretation is based on variance. It seeks to make the factors uncorrelated and with a few large loading. The main thing that varimax does is maximizes the sum of the variances across the factors.
+```
+
+```{r}
+#Question 1D
+
+r.fa.NR <- factanal(covmat = r, factors = 2, rotation = "none")
+r.fa
+
+```
+
+```{r}
+print(r.fa.NR$loadings, cut = 0.5) 
+```
+```{r}
+#Answer to 1D
+#The interpretation changes of my factors changes significantly as this model produces very different figures. Factor 1 seems to have a even lower correlation with "written based" assignments which further enhances my previous hypothesis. The factor that there is nothing under factor 2 drastically changes my interpretation.
+```
+
+
+```{r}
+#Question 2
+
+genes <- read.csv("https://raw.githubusercontent.com/EricBrownTTU/ISQS6350/main/geneexpression.csv",
+header = FALSE)
+
+genes
+
+head(genes)
+
+#Requires a distance matrix to function
+```
+
+```{r}
+# Perform hierarchical clustering on gene data
+genes1 <- read.csv("https://raw.githubusercontent.com/EricBrownTTU/ISQS6350/main/geneexpression.csv", header = FALSE)
+#genes1.s <- scale(genes1)
+dist1 <- as.dist(1 - cor(genes1))
+hc1 <- hclust(dist1, "average")
+plot(hc1, main = "AVerage Linkage HC Dendrogram")
+abline(h=20)# useful for visually determining clusters
+```
+```{r}
+hc1$height
+```
+```{r}
+plot(rev(hc1$height)) 
+```
+```{r}
+# 4 cluster solution
+ct <- cutree(hc1, k = 4)
+ct 
+```
+```{r}
+table(ct) 
+```
+```{r}
+c1 <- subset(rownames(genes1), ct==1)
+c1 
+```
+
+
+```{r}
+#Question 2A
+
+#Diagram plotted above
+```
+
+```{r}
+#Question 2B
+
+#Despite there being 3 branches on the graph, there are 2 distinct groups. All 20 of the unhealthy genes are in one branch. All 20 healthy are divided between two other branches. Therefore since, two of the clusters are comprised of 10 healthy genes and 10 healthy genes which are similar so there are only two distinct groups.
+```
+
+```{r}
+#Complete linkage
+hcc <- hclust(dist1, "complete")
+plot(hcc, main = "Complete Linkage HC Dendrogram") 
+```
+
+```{r}
+#Single linkage
+hcs <- hclust(dist1, "single")
+plot(hcs, main = "Single Linkage HC Dendrogram") 
+```
+
+
+```{r}
+#Question 2C
+
+#It does not change my answer since the other two models only further confirm that there is only 2 groups.
+```
+
+```{r}
+#Question 2D
+
+#The way to determine which points the most across the data set is with complete linkage because it looks for the maximum distance between points in your data set. K-means and BIC can be used as well to confirm the findings.This will allow the collaborator to find the greatest distinction between the points. 
+```
+
+
+```{r}
+#Question 3A
+
+Jep <- read.csv("https://raw.githubusercontent.com/EricBrownTTU/ISQS6350/main/protein.csv", row.names = "Country")
+Jep
+
+```
+
+```{r}
+jep.s <- scale(Jep)
+```
+
+
+```{r}
+jm <- kmeans(jep.s, centers = 4)
+```
+
+```{r}
+table(jm$cluster)
+
+```
+
+```{r}
+jm$cluster
+```
+
+```{r}
+jm$tot.withinss
+```
+
+```{r}
+subset(jep.s, jm$cluster == 1)
+
+```
+
+```{r}
+subset(jep.s, jm$cluster == 2)
+```
+
+
+```{r}
+jm <- kmeans(jep.s, centers = 4, nstart = 10)
+jm$tot.withinss
+
+```
+
+```{r}
+plot.wgss <- function(jm, maxc){
+wss <- numeric(maxc)
+for (i in 1:maxc){
+wss[i] <- kmeans(jm, iter.max = 100, centers = i, nstart = 10)$tot.withinss
+}
+plot(1:maxc, wss, type = "b", xlab = "Number of Clusters",
+ylab = "Within Groups Sum of Squares", main = "Scree Plot")
+}
+plot.wgss(jep.s , 20)
+
+```
+
+```{r}
+#3A, The appropriate number of clusters is two, because after 2 the points all cluster together
+```
+
+```{r}
+#3B the countries in cluster 1 are Belgium, Denmark, Finland, France, Ireland, Norway, Sweden and the UK.
+
+#The countries in cluster 2 are Albania, Bulgaria, Greece, Hungary, Italy, Romania, USSR, and Yugoslavia
+```
+
+```{r}
+evals <- read.csv("https://raw.githubusercontent.com/EricBrownTTU/ISQS6350/main/evals.csv")
+evals <-evals[,3:18]
+evals <- na.omit(evals) # do we need to standardize this data?
+plot.wgss(evals,20) 
+```
+
+
+```{r}
+jm.evals <-kmeans(evals, 3, nstart = 10)
+table(jm.evals$cluster) 
+```
+
+
+```{r}
+#3C, means showing above
+```
+
+```{r}
+plot(Jep[,1:4], col = Jep$Red_Meat, main = "True Clusters") 
+```
+
+```{r}
+#install.packages("mclust")
+library(mclust) 
+```
+
+```{r}
+# conduct model-based clustering
+mbc.i <- Mclust(Jep[,1:4], 3)
+table(mbc.i$classification) 
+```
+
+```{r}
+table(mbc.i$classification, Jep$Red_Meat) 
+```
+
+```{r}
+# scatterplot matrix
+plot(mbc.i, what = "classification") 
+```
+
+```{r}
+# clustering summary
+summary(mbc.i) 
+
+```
+
+```{r}
+head(Jep)
+```
+
+
+
+```{r}
+mbc.m <- Mclust(Jep[,1:9])
+table(mbc.m$classification, Jep$Red_Meat) 
+```
+
+```{r}
+plot(Jep[1:9], col = c(rep(4,10), rep(2,10))) 
+```
+
+```{r}
+plot(mbc.m, what = "classification") 
+```
+
+```{r}
+plot(mbc.m, what = "BIC")
+```
+
+```{r}
+mbc.m$modelName 
+```
+
+```{r}
+subset(Jep, jm$cluster == 3)
+```
+
+```{r}
+#Question 3D
+# The VEI indicates that the model chose 2 clusters. 
+
+#Cluster 1: Austria, Czechoslovakia, East_Germany, The_Netherlands, Poland, Switzerland and West_Germany
+#Cluster 2: Albania, Bulgaria, Greece, Hungary, Italy, Romania, UssR and Yugoslavia
+
+```
+
+
+```{r}
+#Question 3E
+plot(mbc.m, what = "uncertainty", dimens = c(1,9)) 
+```
+
+```{r}
+mbc.m$uncertainty
+```
+
+
+```{r}
+#Question 3E, the countries that are grouped with the largest uncertainty are Denmark, France and Switzerland. They have uncertainty levels of 7.6, 7.6 and 6 respectively. 
+```
+
+```{r}
+#Question 4A
+
+courses <- read.csv("https://raw.githubusercontent.com/EricBrownTTU/ISQS6350/main/Coursetopics.csv",
+header = TRUE)
+courses <- as.matrix(courses)
+```
+
+```{r}
+head(courses)
+```
+
+
+```{r}
+#install.packages("arules")
+library(arules) 
+```
+
+```{r}
+myrules <-apriori(courses, parameter = list(support = 0.01, confidence = 0.25)) 
+```
+```{r}
+summary(myrules)
+```
+
+
+```{r}
+#Question 4A
+
+#179 rules were generated.
+```
+
+```{r}
+inspect(sort(myrules, by = "lift")[1:5]) 
+```
+```{r}
+#Question 4B
+
+#Information from the first item has a statistically significant support and confidence so the rule is not rejected based on those two. The lift suggest this rule is 4 times more likely to occur together than separately.
+```
+
+```{r}
+#Question 4C
+
+#According to the association rules, the next class the student should take is the Forecast class as it has a statistically significant support, confidence and the lift is 4.
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
