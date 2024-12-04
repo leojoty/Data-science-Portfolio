@@ -1,5 +1,3 @@
----
-
 # Johnathan D. Svoboda-James | Data Science Portfolio
 
 **Theoretical Engineering Data Scientist | Innovator in Aerospace, Data Science, and Engineering**
