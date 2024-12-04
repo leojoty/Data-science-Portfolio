@@ -82,42 +82,60 @@ I am actively pursuing doctoral studies, driven by a deep interest in theoretica
 
 In alignment with current industry demands, I am developing prototypes (Technology Readiness Level 3) of the following projects:
 
-### 1. **Predictive Maintenance Using Remaining Useful Life (RUL) Estimation**
+###  **Redact Project for PDF and PPTX Redaction**
+
+- **Description**:  Building a Python-based tool that leverages NLP for automated redaction of sensitive information from PDF and PPTX files, ensuring compliance with data privacy regulations.
+- **Highlights**:
+  - Identifies and redacts sensitive entities such as names, dates, and organizations using Named Entity Recognition (NER).
+  - Streamlines document sanitization processes for improved efficiency and accuracy.
+  - Includes modular and scalable code, allowing for integration into existing workflows.
+  
+
+###  **PDF Append Utility**
+
+- **Description**:  A lightweight and user-friendly Python script designed to append multiple PDF files into a single, consolidated document. The tool is ideal for creating streamlined reports, presentations, or archiving records efficiently
+  - Supports seamless merging of multiple PDFs into one output file.
+  - Handles files of varying sizes and formats without quality degradation.
+  - Simple command-line interface for ease of use and quick execution.
+  - Offers flexibility for both personal and professional document management tasks.
+  
+
+###  **Predictive Maintenance Using Remaining Useful Life (RUL) Estimation**
 
 - **Description**: Developing models to predict the remaining useful life of critical components in aerospace systems, enabling proactive maintenance and reducing downtime.
 - **Highlights**:
   - Utilizes time-series analysis and machine learning algorithms.
   - Aims to enhance safety and operational efficiency.
 
-### 2. **Large Language Models (LLM) for Technical Documentation**
+###  **Large Language Models (LLM) for Technical Documentation**
 
 - **Description**: Implementing LLMs to automate the generation and analysis of technical documents, improving accuracy and reducing manual effort.
 - **Highlights**:
   - Applies NLP techniques to understand and generate complex technical content.
   - Facilitates better knowledge management and dissemination.
 
-### 3. **Cybersecurity Analytics Platform** *(Planned)*
+###  **Cybersecurity Analytics Platform** *(Planned)*
 
 - **Description**: Designing a platform to detect and analyze cybersecurity threats using machine learning, aiming to protect sensitive aerospace data.
 - **Highlights**:
   - Incorporates anomaly detection and threat intelligence.
   - Focuses on real-time monitoring and response.
 
-### 4. **CAD and 3D Modeling Automation** *(Planned)*
+###  **CAD and 3D Modeling Automation** *(Planned)*
 
 - **Description**: Automating the process from technical drawings to CAD models, streamlining the design-to-manufacturing pipeline.
 - **Highlights**:
   - Integrates computer vision and CAD software.
   - Aims to reduce design time and errors.
 
-### 5. **Quantitative Finance Models** *(Planned)*
+###  **Quantitative Finance Models** *(Planned)*
 
 - **Description**: Developing predictive models for financial markets, applying data science techniques to investment strategies.
 - **Highlights**:
   - Utilizes statistical analysis and machine learning.
   - Focuses on risk assessment and portfolio optimization.
 
-### 6. **Physics-Based Simulation Tools** *(Planned)*
+###  **Physics-Based Simulation Tools** *(Planned)*
 
 - **Description**: Creating simulation tools for complex physical systems, aiding in research and development in theoretical physics.
 - **Highlights**:
