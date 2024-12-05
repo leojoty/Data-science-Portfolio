@@ -31,16 +31,18 @@ I am actively pursuing doctoral studies, driven by a deep interest in theoretica
 
 ### Core Data Science Competencies:
 
-- Machine Learning (Generative Models, Predictive Maintenance, Bayesian Networks)
-- Natural Language Processing (NLP)
-- Statistical Analysis and Quantitative Modeling
-- Data Mining, Business Intelligence, and Optimization
+- Research and Development
+-- Machine Learning (Generative Models, Predictive Maintenance, Bayesian Networks)
+-- Natural Language Processing (NLP)
+-- Statistical Analysis and Quantitative Modeling
+-- Data Mining, Business Intelligence, and Optimization
 
-### Technical & Engineering Skills:
+### Technical & Engineering Skills (In Development):
 
-- Aerospace Systems Development
-- Technical Drawing, CAD, and 3D Modeling
-- Computational Engineering and Manufacturing Pipelines
+- Computational Engineering 
+-- Aerospace Systems 
+-- Technical Drawing, CAD, and 3D Modeling 
+-- Administration, DevOPs, Cybersecurity and Manufacturing Pipelines
 
 ### Leadership & Communication:
 
@@ -48,7 +50,7 @@ I am actively pursuing doctoral studies, driven by a deep interest in theoretica
 - Public Speaking and Mentorship
 - Agile and Waterfall Methodologies
 
-### Tools & Technologies:
+### Tools & Technologies (In Development):
 
 - Python, R, SQL
 - Hugging Face Transformers and Hub
@@ -56,32 +58,54 @@ I am actively pursuing doctoral studies, driven by a deep interest in theoretica
 - CAD Software (Onshape, AutoCAD) and 3D Printing Workflows
 
 ---
-
 ## **Repository Structure**
 
+The repository consists of a mix of niche analysis projects visible in the `main` branch and standalone projects located in **separate worktree branches**. Each standalone project will soon be available on PyPI, providing users a modular approach to exploring my work.
+
+**Main Branch Structure**:
 ```plaintext
 📦 Data-Science-Portfolio
-├── 📂 datasets            # Public datasets and preprocessing scripts
-├── 📂 projects            # End-to-end data science projects
-├── 📂 tools               # Custom-built tools and utilities
-├── 📂 my-llm-work-sample  # Hugging Face-based NLP and generative projects
-│   ├── main.py            # Tokenization and dataset processing script
-│   ├── tree.py            # Dataset exploration utility
-│   ├── .gitignore         # Ensures sensitive files are excluded
-├── 📂 docs                # Documentation, tutorials, and insights
-│   ├── tutorial.md        # In-depth explanations of main projects
-│   ├── theory-explained.md # Connections between theory and data science
-├── README.md              # Overview of the repository
+├── 📂 LLM                  # Large Language Models projects and utilities
+│   └── 📂 Evaluator        # Example project for Hugging Face-based NLP workflows
+├── 📂 Project: EDA         # Collection of niche data analysis projects
+│   ├── 📂 Covid-19_Stockmarket_Analysis  
+│   ├── 📂 DataScienceMath  
+│   ├── 📂 Monte-Carlo  
+│   └── 📂 OilRig_Analysis  
+├── .gitignore              # Git exclusion file
+└── README.md               # Overview of the repository
 ```
+
+**Worktree Branch Projects**:
+- `redact-branch`: **Redact Project** (PDF and PPTX Redaction Tool).  
+  - This branch contains the full source code and related materials for the `redact` PyPI module.  
+
+Additional branches are in development and will host more modular projects.  
 
 ---
 
-## **Highlighted Projects**
+### **Project:Exploratory Data Analysis in the Main Branch**
+
+#### **Python: Covid-19 Stock Market Analysis**
+- Explores the impact of Covid-19 on the Nasdaq index.  
+- Applies time-series analysis and Monte Carlo simulations.
+
+#### **R: Data Science Math**
+- Implements mathematical models for data analysis in R.  
+
+#### **R: Monte Carlo Simulations**
+- Simulates stochastic processes for risk and uncertainty analysis.  
+
+#### **Oil Rig Analytics**
+- Conducts data-driven optimization for operational efficiency in oil extraction.
+
+## **Current Projects in Other Branches**
 
 In alignment with current industry demands, I am developing prototypes (Technology Readiness Level 3) of the following projects:
 
 ###  **Redact Project for PDF and PPTX Redaction**
 
+- **Branch**: `redact-branch`
 - **Description**:  Building a Python-based tool that leverages NLP for automated redaction of sensitive information from PDF and PPTX files, ensuring compliance with data privacy regulations.
 - **Highlights**:
   - Identifies and redacts sensitive entities such as names, dates, and organizations using Named Entity Recognition (NER).
@@ -97,6 +121,7 @@ In alignment with current industry demands, I am developing prototypes (Technolo
   - Simple command-line interface for ease of use and quick execution.
   - Offers flexibility for both personal and professional document management tasks.
   
+## **Planned Projects in Other Branches**
 
 ###  **Predictive Maintenance Using Remaining Useful Life (RUL) Estimation**
 
@@ -155,8 +180,16 @@ This portfolio reflects my commitment to integrating data science with theoretic
    git clone https://github.com/leojoty/Data-science-Portfolio.git
    ```
 
-2. **Explore Projects**:
-   - Navigate to the `projects` folder for comprehensive data science workflows. 
+2. **Check Branches for Projects**:
+   - Use `git branch -r` to view remote branches.  
+   - Switch to a specific branch to explore project directories:
+     ```bash
+     git checkout redact-branch
+     ```
+
+3. **Install Modules**:
+   - Branches with PyPI modules will include installation instructions.
+. 
    
 ---
 
@@ -216,4 +249,4 @@ This portfolio is a living document, constantly evolving with new projects, upda
 
 By navigating through this repository, you explore the intersection of data science, engineering, and theoretical physics, where innovation meets implementation. Thank you for visiting my portfolio. Let’s build the future together.
 
----
+
