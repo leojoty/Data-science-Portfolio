@@ -78,7 +78,11 @@ The repository consists of a mix of niche analysis projects visible in the `main
 
 **Worktree Branch Projects**:
 - `redact-branch`: **Redact Project** (PDF and PPTX Redaction Tool).  
-  - This branch contains the full source code and related materials for the `redact` PyPI module.  
+  - This branch contains the full source code and related materials for the `redact` PyPI module.
+  
+**Worktree Branch Projects**:
+- `redact-branch`: **LLM Project** (Large Language Model).  
+  - This branch contains the full source code and related materials for the `LLM` PyPI module.   
 
 Additional branches are in development and will host more modular projects.  
 
@@ -121,6 +125,15 @@ In alignment with current industry demands, I am developing prototypes (Technolo
   - Simple command-line interface for ease of use and quick execution.
   - Offers flexibility for both personal and professional document management tasks.
   
+
+###  **Large Language Models (LLM) for Technical Documentation**
+
+- **Description**: Implementing LLMs to automate the generation and analysis of technical documents, improving accuracy and reducing manual effort.
+- **Highlights**:
+  - Applies NLP techniques to understand and generate complex technical content.
+  - Facilitates better knowledge management and dissemination.
+
+  
 ## **Planned Projects in Other Branches**
 
 ###  **Predictive Maintenance Using Remaining Useful Life (RUL) Estimation**
@@ -129,13 +142,6 @@ In alignment with current industry demands, I am developing prototypes (Technolo
 - **Highlights**:
   - Utilizes time-series analysis and machine learning algorithms.
   - Aims to enhance safety and operational efficiency.
-
-###  **Large Language Models (LLM) for Technical Documentation**
-
-- **Description**: Implementing LLMs to automate the generation and analysis of technical documents, improving accuracy and reducing manual effort.
-- **Highlights**:
-  - Applies NLP techniques to understand and generate complex technical content.
-  - Facilitates better knowledge management and dissemination.
 
 ###  **Cybersecurity Analytics Platform** *(Planned)*
 
