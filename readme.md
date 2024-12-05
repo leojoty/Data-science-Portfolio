@@ -1,219 +1,129 @@
-# Johnathan D. Svoboda-James | Data Science Portfolio
+# **LLM Project: Towards Next-Generation Language Models**
 
-**Theoretical Engineering Data Scientist | Innovator in Aerospace, Data Science, and Engineering**
-
-Welcome to my Data Science Portfolio. This repository showcases projects and methodologies that highlight my expertise in data science, machine learning, and engineering workflows. My work bridges theoretical research and practical implementation, focusing on solving complex challenges in aerospace, mathematics, and engineering.
+**Johnathan D. Svoboda-James | Theoretical Engineering Data Scientist**  
+*"Building advanced NLP systems to empower the future of human-computer interaction."*
 
 ---
 
 ## **Table of Contents**
 
-1. [About Me](#about-me)
-2. [Skills & Expertise](#skills--expertise)
-3. [Repository Structure](#repository-structure)
-4. [Highlighted Projects](#highlighted-projects)
-5. [Goals & Vision](#goals--vision)
-6. [How to Use This Repository](#how-to-use-this-repository)
-7. [Licenses & Compliance](#licenses--compliance)
-8. [Contact](#contact)
+1. [Project Overview](#project-overview)  
+2. [Current Functionality](#current-functionality)  
+3. [Roadmap and Features](#roadmap-and-features)  
+4. [Repository Structure](#repository-structure)  
+5. [How to Use](#how-to-use)  
+6. [Contributing](#contributing)  
+7. [Contact](#contact)  
 
 ---
 
-## **About Me**
+## **Project Overview**
 
-As a Theoretical Engineering Data Scientist with over 8 years of experience, I specialize in developing innovative solutions that combine theoretical research with practical applications. My career spans advanced data science, machine learning, and predictive modeling, focusing on aerospace systems, technical workflows, and manufacturing pipelines.
+The **LLM Project** is a long-term initiative to develop a state-of-the-art large language model (LLM) with cutting-edge capabilities. The project begins with an **Evaluator Module**, focused on loading, preprocessing, and tokenizing large-scale datasets (e.g., The Stack v2), paving the way for advanced NLP models. Future iterations will introduce new architectures, enhanced reasoning, multimodality, and extensive evaluation protocols.
 
-I am actively pursuing doctoral studies, driven by a deep interest in theoretical physics, mathematics, and their intersections with engineering. My long-term goal is to leverage data science to revolutionize engineering workflows, from concept to manufacturing, while contributing to groundbreaking research in theoretical physics and computational engineering.
+The ultimate goal is to iteratively build a comprehensive LLM that can understand, reason, and provide actionable insights across a wide range of tasks, domains, and languages.
 
 ---
 
-## **Skills & Expertise**
+## **Current Functionality**
 
-### Core Data Science Competencies:
+### **Evaluator Module**
+- **Description**: This module processes and tokenizes datasets for training or fine-tuning language models, ensuring compatibility with Hugging Face repositories.
+- **Key Features**:
+  - **Dataset Handling**: Efficient streaming and tokenization of The Stack v2 dataset.
+  - **Repository Integration**: Automates repository setup, data upload, and version control with Hugging Face.
+  - **Tokenization**: GPT-2-based tokenizer with padding and truncation for large-scale datasets.
+  - **Error Handling**: Robust error-checking mechanisms for dataset streaming and tokenization.
 
-- Machine Learning (Generative Models, Predictive Maintenance, Bayesian Networks)
-- Natural Language Processing (NLP)
-- Statistical Analysis and Quantitative Modeling
-- Data Mining, Business Intelligence, and Optimization
+---
 
-### Technical & Engineering Skills:
+## **Roadmap and Features**
 
-- Aerospace Systems Development
-- Technical Drawing, CAD, and 3D Modeling
-- Computational Engineering and Manufacturing Pipelines
+The LLM project will evolve in **phases**, introducing increasingly sophisticated features:
 
-### Leadership & Communication:
+### **Phase 1: Evaluator Module (Current)**
+- Dataset processing and integration with Hugging Face repositories.
 
-- Technical Leadership and Project Management
-- Public Speaking and Mentorship
-- Agile and Waterfall Methodologies
+### **Phase 2: Core LLM Architecture**
+- Implementing transformer-based models with optimized memory and long-context handling.
 
-### Tools & Technologies:
+### **Phase 3: Multimodal Support**
+- Enable the model to process text, images, and audio for richer context-aware responses.
 
-- Python, R, SQL
-- Hugging Face Transformers and Hub
-- Tableau, Excel, and Statistical Packages
-- CAD Software (Onshape, AutoCAD) and 3D Printing Workflows
+### **Phase 4: Advanced Reasoning and Tool Integration**
+- Incorporating symbolic reasoning, knowledge graphs, and real-time API integrations.
+
+### **Phase 5: Safety, Alignment, and Ethics**
+- Robust safety measures, RLHF, and compliance with legal and ethical standards.
 
 ---
 
 ## **Repository Structure**
 
 ```plaintext
-📦 Data-Science-Portfolio
-├── 📂 datasets            # Public datasets and preprocessing scripts
-├── 📂 projects            # End-to-end data science projects
-├── 📂 tools               # Custom-built tools and utilities
-├── 📂 my-llm-work-sample  # Hugging Face-based NLP and generative projects
-│   ├── main.py            # Tokenization and dataset processing script
-│   ├── tree.py            # Dataset exploration utility
-│   ├── .gitignore         # Ensures sensitive files are excluded
-├── 📂 docs                # Documentation, tutorials, and insights
-│   ├── tutorial.md        # In-depth explanations of main projects
-│   ├── theory-explained.md # Connections between theory and data science
-├── README.md              # Overview of the repository
+📦 LLM Project
+├── 📂 Evaluator               # Current module for dataset evaluation and preprocessing
+│   ├── main.py                # Entry point for loading and tokenizing datasets
+│   ├── tree.py                # Utility for exploring dataset structure
+│   ├── .env                   # Environment variables (e.g., Hugging Face credentials)
+│   ├── .gitignore             # Exclusions for sensitive files
+│   ├── 📂 .cache              # Cached files for Hugging Face and tokenizer
+│   └── 📂 my-llm-work-sample  # Demonstration of tokenization workflows
+├── README.md                  # Project overview and usage guide
 ```
 
 ---
 
-## **Highlighted Projects**
+## **How to Use**
 
-In alignment with current industry demands, I am developing prototypes (Technology Readiness Level 3) of the following projects:
-
-###  **Redact Project for PDF and PPTX Redaction**
-
-- **Description**:  Building a Python-based tool that leverages NLP for automated redaction of sensitive information from PDF and PPTX files, ensuring compliance with data privacy regulations.
-- **Highlights**:
-  - Identifies and redacts sensitive entities such as names, dates, and organizations using Named Entity Recognition (NER).
-  - Streamlines document sanitization processes for improved efficiency and accuracy.
-  - Includes modular and scalable code, allowing for integration into existing workflows.
-  
-
-###  **PDF Append Utility**
-
-- **Description**:  A lightweight and user-friendly Python script designed to append multiple PDF files into a single, consolidated document. The tool is ideal for creating streamlined reports, presentations, or archiving records efficiently
-  - Supports seamless merging of multiple PDFs into one output file.
-  - Handles files of varying sizes and formats without quality degradation.
-  - Simple command-line interface for ease of use and quick execution.
-  - Offers flexibility for both personal and professional document management tasks.
-  
-
-###  **Predictive Maintenance Using Remaining Useful Life (RUL) Estimation**
-
-- **Description**: Developing models to predict the remaining useful life of critical components in aerospace systems, enabling proactive maintenance and reducing downtime.
-- **Highlights**:
-  - Utilizes time-series analysis and machine learning algorithms.
-  - Aims to enhance safety and operational efficiency.
-
-###  **Large Language Models (LLM) for Technical Documentation**
-
-- **Description**: Implementing LLMs to automate the generation and analysis of technical documents, improving accuracy and reducing manual effort.
-- **Highlights**:
-  - Applies NLP techniques to understand and generate complex technical content.
-  - Facilitates better knowledge management and dissemination.
-
-###  **Cybersecurity Analytics Platform** *(Planned)*
-
-- **Description**: Designing a platform to detect and analyze cybersecurity threats using machine learning, aiming to protect sensitive aerospace data.
-- **Highlights**:
-  - Incorporates anomaly detection and threat intelligence.
-  - Focuses on real-time monitoring and response.
-
-###  **CAD and 3D Modeling Automation** *(Planned)*
-
-- **Description**: Automating the process from technical drawings to CAD models, streamlining the design-to-manufacturing pipeline.
-- **Highlights**:
-  - Integrates computer vision and CAD software.
-  - Aims to reduce design time and errors.
-
-###  **Quantitative Finance Models** *(Planned)*
-
-- **Description**: Developing predictive models for financial markets, applying data science techniques to investment strategies.
-- **Highlights**:
-  - Utilizes statistical analysis and machine learning.
-  - Focuses on risk assessment and portfolio optimization.
-
-###  **Physics-Based Simulation Tools** *(Planned)*
-
-- **Description**: Creating simulation tools for complex physical systems, aiding in research and development in theoretical physics.
-- **Highlights**:
-  - Combines numerical methods with data-driven approaches.
-  - Supports hypothesis testing and experimental design.
-
----
-
-## **Goals & Vision**
-
-This portfolio reflects my commitment to integrating data science with theoretical physics, mathematics, and engineering workflows. It demonstrates my capability to lead in research-intensive, highly technical fields while delivering practical solutions. My ultimate vision is to secure leadership roles in organizations or research groups that push the boundaries of aerospace, nuclear science, and AI integration.
-
----
-
-## **How to Use This Repository**
-
+### **Run the Evaluator Module**
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/leojoty/Data-science-Portfolio.git
+   cd LLM/Evaluator
    ```
 
-2. **Explore Projects**:
-   - Navigate to the `projects` folder for comprehensive data science workflows. 
-   
----
+2. **Set Up Environment Variables**:
+   - Create a `.env` file in the `Evaluator` directory with the following:
+     ```plaintext
+     HUGGINGFACE_USERNAME=your_username
+     HUGGINGFACE_REPO_NAME=your_repo_name
+     ```
 
-## **How to Use This Repository (Continued)**
-
-3. **Run the LLM Work Sample**:
-   - Navigate to the `my-llm-work-sample` directory.
-   - Execute `main.py` for a demonstration of tokenization and dataset processing with Hugging Face's transformers.
-
+3. **Install Required Libraries**:
    ```bash
-   cd my-llm-work-sample
-   python main.py
+   pip install -r requirements.txt
    ```
 
-4. **Contribute**:
-   - Fork the repository and submit a pull request with improvements or new project ideas.
-   - Reach out via email for collaboration on high-impact projects.
-
-5. **License Compliance**:
-   - All scripts and datasets comply with respective licensing requirements. For detailed license information, see [Licenses & Compliance](#licenses--compliance).
+4. **Execute the Script**:
+   - Load and preprocess the dataset:
+     ```bash
+     python main.py
+     ```
 
 ---
 
-## **Licenses & Compliance**
+## **Contributing**
 
-This repository adheres to the following licenses and compliance protocols:
+We welcome contributions to the LLM Project! Whether you’re interested in improving the evaluator module, introducing new architectures, or advancing the roadmap, your input is valued.
 
-- **Dataset Usage**: Licensing details for datasets such as The Stack v2 are included within the dataset-specific directories.
-- **Hugging Face Integration**: Implements open-source Hugging Face transformers within license agreements.
-- **Custom Code**: All custom scripts in this repository are under the MIT License unless otherwise noted.
+1. **Fork the Repository**:
+   - Clone your fork and create a feature branch:
+     ```bash
+     git checkout -b feature/your-feature-name
+     ```
 
-For full license details, refer to the [LICENSE.md](LICENSE.md) file in the root directory.
+2. **Submit a Pull Request**:
+   - Include a clear description of your changes and their impact on the project.
 
 ---
 
 ## **Contact**
 
-- **Email**: [Diversity@johnangie.org](mailto:Diversity@johnangie.org)
-- **GitHub**: [leojoty](https://github.com/leojoty)
-- **Hugging Face**: [Johnathan Svoboda-James](https://huggingface.co/leojoty)
+For questions or collaboration opportunities, please reach out via:
 
-For inquiries or collaboration opportunities, feel free to contact me via email or connect with me on LinkedIn.
+- **Website**: [Johnathan Svoboda-James](https://www.johnangie.org)  
+- **GitHub**: [leojoty](https://github.com/leojoty)  
 
----
+Together, let’s advance NLP and AI for the benefit of all.
 
-### **Acknowledgments**
-
-I extend my gratitude to my mentors, colleagues, and collaborators who have guided me in my journey toward mastering data science, engineering, and theoretical research.
-
----
-
-### **Future Enhancements**
-
-This portfolio is a living document, constantly evolving with new projects, updates, and innovations. Stay tuned for advancements in cybersecurity analytics, CAD automation, and physics-based applications. Contributions and suggestions are always welcome.
-
----
-
-By navigating through this repository, you explore the intersection of data science, engineering, and theoretical physics, where innovation meets implementation. Thank you for visiting my portfolio. Let’s build the future together.
-
----
