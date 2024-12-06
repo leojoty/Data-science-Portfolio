@@ -58,37 +58,53 @@ I am actively pursuing doctoral studies, driven by a deep interest in theoretica
 - CAD Software (Onshape, AutoCAD) and 3D Printing Workflows
 
 ---
+
 ## **Repository Structure**
 
-The repository consists of a mix of niche analysis projects visible in the `main` branch and standalone projects located in **separate worktree branches**. Each standalone project will soon be available on PyPI, providing users a modular approach to exploring my work.
+The repository consists of a mix of niche analysis projects visible in the `main` branch and standalone projects located in **separate worktree branches**. Each standalone project will soon be available on PyPI, providing users with a modular approach to exploring my work.
 
 **Main Branch Structure**:
 ```plaintext
 📦 Data-Science-Portfolio
-├── 📂 LLM                  # Large Language Models projects and utilities
-│   └── 📂 Evaluator        # Example project for Hugging Face-based NLP workflows
-├── 📂 Project: EDA         # Collection of niche data analysis projects
+├── 📂 Projects                 # Main directory for niche and standalone projects
 │   ├── 📂 Covid-19_Stockmarket_Analysis  
+│       # Analysis of the impact of COVID-19 on stock market trends and volatility.
 │   ├── 📂 DataScienceMath  
+│       # Mathematical models and algorithms applied to data science problems.
 │   ├── 📂 Monte-Carlo  
-│   └── 📂 OilRig_Analysis  
-├── .gitignore              # Git exclusion file
-└── README.md               # Overview of the repository
+│       # Simulations leveraging Monte Carlo methods for probabilistic analysis.
+│   ├── 📂 OilRig_Analysis  
+│       # Predictive and diagnostic analysis of oil rig systems and operations.
+│   ├── 📂 PDF-Append           # Standalone project for merging PDF files
+│       # Tool for combining multiple PDF files into a single document.
+│       ├── .gitattributes
+│       ├── .gitignore
+│       ├── pdfappend.py
+│       └── README.md
+├── 📂 Redact                   # Worktree project for PDF and PPTX redaction
+│       # Python tool for redacting sensitive data in PDF and PowerPoint files.
+│   ├── .gitattributes
+│   ├── .gitignore
+│   └── README.md
+├── 📂 LLM                      # Large Language Model development and utilities
+│   └── 📂 Evaluator            # Tool for tokenizing and preprocessing The Stack v2 dataset.
+├── .gitignore                  # Git exclusion file
+├── .gitattributes              # Git attributes configuration
+└── README.md                   # Overview of the repository
 ```
 
 **Worktree Branch Projects**:
-- `redact-branch`: **Redact Project** (PDF and PPTX Redaction Tool).  
+- **`redact-branch`**: **Redact Project** (PDF and PPTX Redaction Tool).  
   - This branch contains the full source code and related materials for the `redact` PyPI module.
   
-**Worktree Branch Projects**:
-- `LLM-branch`: **LLM Project** (Large Language Model).  
+- **`llm-branch`**: **LLM Project** (Large Language Model Evaluator).  
   - This branch contains the full source code and related materials for the `LLM` PyPI module.
   
-**Worktree Branch Projects**:
-- `pdf-append-branch`: **Pdf Append Project** (Pdf Append Tool).  
-  - This branch contains the full source code and related materials for the `pdf-append` PyPI module.    
+- **`pdf-append-branch`**: **PDF-Append Project** (PDF Append Tool).  
+  - This branch contains the full source code and related materials for the `pdf-append` PyPI module.
 
 Additional branches are in development and will host more modular projects.  
+
 
 ---
 
