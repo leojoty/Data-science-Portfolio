@@ -81,8 +81,12 @@ The repository consists of a mix of niche analysis projects visible in the `main
   - This branch contains the full source code and related materials for the `redact` PyPI module.
   
 **Worktree Branch Projects**:
-- `redact-branch`: **LLM Project** (Large Language Model).  
-  - This branch contains the full source code and related materials for the `LLM` PyPI module.   
+- `LLM-branch`: **LLM Project** (Large Language Model).  
+  - This branch contains the full source code and related materials for the `LLM` PyPI module.
+  
+**Worktree Branch Projects**:
+- `pdf-append-branch`: **Pdf Append Project** (Pdf Append Tool).  
+  - This branch contains the full source code and related materials for the `pdf-append` PyPI module.    
 
 Additional branches are in development and will host more modular projects.  
 
@@ -119,6 +123,7 @@ In alignment with current industry demands, I am developing prototypes (Technolo
 
 ###  **PDF Append Utility**
 
+- **Branch**: `pdf-append-branch`
 - **Description**:  A lightweight and user-friendly Python script designed to append multiple PDF files into a single, consolidated document. The tool is ideal for creating streamlined reports, presentations, or archiving records efficiently
   - Supports seamless merging of multiple PDFs into one output file.
   - Handles files of varying sizes and formats without quality degradation.
@@ -128,6 +133,7 @@ In alignment with current industry demands, I am developing prototypes (Technolo
 
 ###  **Large Language Models (LLM) for Technical Documentation**
 
+- **Branch**: `llm-branch`
 - **Description**: Implementing LLMs to automate the generation and analysis of technical documents, improving accuracy and reducing manual effort.
 - **Highlights**:
   - Applies NLP techniques to understand and generate complex technical content.
