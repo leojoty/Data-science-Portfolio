@@ -257,7 +257,7 @@ For full license details, refer to the [LICENSE.md](LICENSE.md) file in the root
 
 - **Email**: [Diversity@johnangie.org](mailto:Diversity@johnangie.org)
 - **GitHub**: [leojoty](https://github.com/leojoty)
-- **Hugging Face**: [Johnathan Svoboda-James](https://huggingface.co/leojoty)
+- **Hugging Face**: [Johnathan S.J.](https://huggingface.co/leojoty)
 
 For inquiries or collaboration opportunities, feel free to contact me via email or connect with me on LinkedIn.
 
