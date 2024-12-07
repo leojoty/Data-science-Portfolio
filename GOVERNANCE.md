@@ -1,12 +1,12 @@
 # Governance Document for J-A Legacy
 
 ## **Introduction**
-This governance document outlines the structure, decision-making processes, and roles for the effective management and growth of the [J-A Legacy]. Our goal is to ensure transparency, inclusivity, and collaboration while maintaining the project's core vision and mission.
+This governance document outlines the structure, decision-making processes, and roles for the effective management and growth of the J-A Legacy. Our goal is to ensure transparency, inclusivity, and collaboration while maintaining the project's core vision and mission.
 
 ---
 
 ## **Mission and Objectives**
-The mission of [J-A Legacy] is to:
+The mission of J-A Legacy is to:
 1. Advance data science, engineering, and aerospace innovation through open-source tools and research.
 2. Foster a collaborative community of contributors and users.
 3. Deliver impactful solutions that bridge theoretical research with practical applications.
@@ -77,4 +77,4 @@ This governance document is subject to periodic reviews to ensure its relevance 
 ---
 
 ## **Contact**
-For questions or concerns about this governance document or the project, please contact us at [diversity@johnangie.org].
+For questions or concerns about this governance document or the project, please contact us at diversity@johnangie.org.
