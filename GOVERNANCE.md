@@ -1,4 +1,4 @@
-# Governance Document for [Your Project Name]
+# Governance Document for J-A Legacy
 
 ## **Introduction**
 This governance document outlines the structure, decision-making processes, and roles for the effective management and growth of the [J-A Legacy]. Our goal is to ensure transparency, inclusivity, and collaboration while maintaining the project's core vision and mission.
