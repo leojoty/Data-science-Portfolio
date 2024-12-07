@@ -50,7 +50,7 @@ The mission of J-A Legacy is to:
 ---
 
 ## **Code of Conduct**
-All members of the community are required to follow the [Contributor Code of Conduct](https://github.com/leojoty/Data-science-Portfolio/blob/main/CODE_OF_CONDUCT.md) to ensure a welcoming and respectful environment.
+All members of the community are required to follow the [Contributor Code of Conduct](https://github.com/leojoty/Data-science-Portfolio/blob/main/CodeofConduct.md) to ensure a welcoming and respectful environment.
 
 ---
 
