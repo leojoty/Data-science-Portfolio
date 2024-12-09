@@ -1,19 +1,15 @@
 ###############################################################################
-# J-A Legacy PROPRIETARY and Not A Contract Deliverable
-# Use and Disclosure Limited to U.S. Employees and only in support of AI programs
-# Copyright © J-A Legacy 2019-present. Unpublished work - all rights reserved.
-# Third party disclosure requires written approval.
+# Released under the MIT License
+# See LICENSE file in the repository root for details.
 ###############################################################################
 # -*- coding: utf-8 -*-
 """
-Created on Mon Dec  3 12:04:40 2024
+Created on Mon Dec 3 12:04:40 2024
 
-__author__ = "Johnathan Svoboda-James"
-__copyright__ = "Copyright 2024, J-A Legacy"
-__license__ = "J-A Legacy Proprietary"
-__maintainer__ = "Johnathan Svoboda-James"
-__email__ = "Diversity@johnangie.org
-__status__ = "Development"
+__author__ = "Johnathan SJ"
+__license__ = "MIT"
+__email__ = "diversity@johnangie.org"
+__status__ = "Production"
 __version__ = "1.0"
 """
 
