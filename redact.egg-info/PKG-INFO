@@ -1,3 +1,20 @@
+Metadata-Version: 2.1
+Name: redact
+Version: 1.0.0
+Summary: A tool for redacting sensitive information from PDFs and PowerPoint files.
+Home-page: https://github.com/leojoty/Data-science-Portfolio/tree/redact-branch
+Author: Johnathan S.J.
+Author-email: https://www.johnangie.org
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: spacy
+Requires-Dist: python-pptx
+
 # **Redact: A Tool for Redacting Sensitive Information**
 
 **Author:** John S.J.
@@ -16,7 +33,7 @@ Redact is a Python package designed to remove sensitive information from PDF and
 For any questions, feature requests, or support related to this project, please visit my website:  
 [https://www.johnangie.org](https://www.johnangie.org)
 
-This website serves as the central hub for communication, additional resources, and other projects I’ve created. Feel free to explore and reach out through the provided contact form or information there.
+This website serves as the central hub for communication, additional resources, and other projects Iâ€™ve created. Feel free to explore and reach out through the provided contact form or information there.
 
 ---
 
@@ -29,5 +46,9 @@ This website serves as the central hub for communication, additional resources, 
 
 ---
 
-## **PyPI coming soon**
+## **Installation**
 
+Install Redact via pip:
+
+```bash
+pip install redact
