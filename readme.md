@@ -1,7 +1,7 @@
 # Team Optimization Solution
 
 ## Overview
-The `team-optimization-solution` project aims to resolve the challenge of duplicate efforts within your team. This solution is designed to help teams working on large-scale projects, such as those with SOCOM and the Air Force, streamline collaboration, track ongoing projects, and avoid redundancy.
+The `team-optimization-solution` project aims to resolve the challenge of duplicate efforts within your team. This solution is designed to help teams working on large-scale projects streamline collaboration, track ongoing projects, and avoid redundancy.
 
 This project leverages cutting-edge tools and methodologies, focusing on scalability, transparency, and user adoption.
 
