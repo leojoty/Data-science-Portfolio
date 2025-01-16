@@ -109,28 +109,28 @@ The exploratory data analysis (EDA) focuses on several datasets containing measu
 ### Temporal Voltage and Current Data
 - **Dataset**: `node530_figure3_a.csv`
 - **Key Insight**: The correlation heatmap reveals strong relationships between applied voltage (`U_a`), memory voltage (`U_m`), and gap voltage (`U_g`). Current (`I`) shows bounded variability, indicating controlled discharge behavior.
-- **Graph**: ![Correlation Heatmap for Voltage and Current](./images/node530_figure3_a_heatmap.png)
+- **Graph**: ![Correlation Heatmap for Voltage and Current](./images/node530_figure3_a.csv_heatmap.png)
 
 ### Charge Density Evolution
 - **Dataset**: `node530_figure6.csv`
 - **Key Insight**: Charge density (`σ`) shows consistent values across multiple time steps (`t_1` to `t_6`), highlighting statistical bounds and fine-tuning.
 - **Graphs**:
-  - Histogram: ![Charge Density Histogram](./images/node530_figure6_histograms.png)
-  - Heatmap: ![Charge Density Correlation Heatmap](./images/node530_figure6_heatmap.png)
+  - Histogram: ![Charge Density Histogram](./images/node530_figure6.csv_histograms.png)
+  - Heatmap: ![Charge Density Correlation Heatmap](./images/node530_figure6.csv_heatmap.png)
 
 ### Electron Production Rates
 - **Datasets**: `node530_figure_5_a_0.csv` and `node530_figure_5_b_0.csv`
 - **Key Insight**: Extreme values in electron production rates and divergence confirm stochastic behaviors within deterministic limits.
 - **Graphs**:
-  - Histogram: ![Electron Production Histogram](./images/node530_figure_5_a_0_histograms.png)
-  - Heatmap: ![Electron Production Heatmap](./images/node530_figure_5_a_0_heatmap.png)
+  - Histogram: ![Electron Production Histogram](./images/node530_figure_5_a_0.csv_histograms.png)
+  - Heatmap: ![Electron Production Heatmap](.images/node530_figure_5_a_0.csv_heatmap.png)
 
 ### Electric Field and Particle Densities
 - **Dataset**: `node530_figure7_a.csv`
 - **Key Insight**: The electric field (`E`) shows significant variation, while electron (`n_e`) and ion densities (`n_i`) remain high, indicating robust plasma interactions.
 - **Graphs**:
-  - Histogram: ![Electric Field Histogram](./images/node530_figure7_a_histograms.png)
-  - Heatmap: ![Electric Field Heatmap](./images/node530_figure7_a_heatmap.png)
+  - Histogram: ![Electric Field Histogram](./images/node530_figure7_a.csv_histograms.png)
+  - Heatmap: ![Electric Field Heatmap](./images/node530_figure7_a.csv_heatmap.png)
 
 ## Graph Repository
 All generated graphs are stored in the `images/` directory. Each file corresponds to a specific dataset and is named for clarity. Review these plots for further analysis or presentations.
