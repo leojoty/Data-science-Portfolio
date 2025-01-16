@@ -127,6 +127,15 @@ Additional branches are in development and will host more modular projects.
 
 In alignment with current industry demands, I am developing prototypes (Technology Readiness Level 3) of the following projects:
 
+###  **Physics-Based Research & Simulation Tools** 
+
+- **Branch**: `physics`
+- **Description**: Creating simulation tools for complex physical systems, aiding in research and development in theoretical physics.
+- **Highlights**:
+  - Combines numerical methods with data-driven approaches.
+  - Supports hypothesis testing and experimental design.
+
+
 ###  **Redact Project for PDF and PPTX Redaction**
 
 - **Branch**: `redact-branch`
@@ -185,13 +194,6 @@ In alignment with current industry demands, I am developing prototypes (Technolo
 - **Highlights**:
   - Utilizes statistical analysis and machine learning.
   - Focuses on risk assessment and portfolio optimization.
-
-###  **Physics-Based Simulation Tools** *(Planned)*
-
-- **Description**: Creating simulation tools for complex physical systems, aiding in research and development in theoretical physics.
-- **Highlights**:
-  - Combines numerical methods with data-driven approaches.
-  - Supports hypothesis testing and experimental design.
 
 ---
 
