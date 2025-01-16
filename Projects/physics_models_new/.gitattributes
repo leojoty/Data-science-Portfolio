@@ -1,0 +1,5 @@
+C:/Users/gospe/Portfolio/Projects/Physics_models/streamer-surface-interaction-in-an-atmospheric-pressure-dielectric-barrier-discharge-in-argon-dataset-All-2025-01-15_2045/node_530_figure8.h5 filter=lfs diff=lfs merge=lfs -text
+C:/Users/gospe/Portfolio/Projects/Physics_models/streamer-surface-interaction-in-an-atmospheric-pressure-dielectric-barrier-discharge-in-argon-dataset-All-2025-01-15_2045/node_530_figure_3_c_to_f.h5 filter=lfs diff=lfs merge=lfs -text
+C:/Users/gospe/Portfolio/Projects/Physics_models/streamer-surface-interaction-in-an-atmospheric-pressure-dielectric-barrier-discharge-in-argon-dataset-All-2025-01-15_2045/node530_figure_3_c_to_f.h5 filter=lfs diff=lfs merge=lfs -text
+*.h5 filter=lfs diff=lfs merge=lfs -text
+*.csv filter=lfs diff=lfs merge=lfs -text
